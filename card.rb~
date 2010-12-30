@@ -1,0 +1,29 @@
+
+class Card
+  attr_reader :rank, :suit
+
+  def initialize(rank, suit)
+    fail unless Poker::Suits.include? suit and Poker::Ranks.include? rank
+    @suit, @rank = suit, rank
+  end
+
+  def print
+    "#{@rank} of #{@suit}"
+  end
+
+  def short_print
+    "#{@rank.to_s[0..0]}#{@suit.to_s.downcase[0..0]}"
+  end
+
+  def rank_index
+    Poker::Ranks.index self.rank
+  end
+
+  def same_rank_as(card2)
+    self.rank == card2.rank
+  end
+
+  def same_suit_as(card2)
+    self.suit == card2.suit
+  end
+end

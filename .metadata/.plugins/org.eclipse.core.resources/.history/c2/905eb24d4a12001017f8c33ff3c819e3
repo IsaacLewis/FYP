@@ -1,0 +1,15 @@
+package me.saac.i;
+
+public class GameInfo {
+	public enum Dealer { PLAYER, OPPONENT };
+	
+	public int blindSize;
+	public Card[] playerHand;
+	public Dealer dealer;
+	
+	public GameInfo(int bs, Card[] ph, Dealer d) {
+		blindSize = bs;
+		playerHand = ph;
+		dealer = d;
+	}
+}

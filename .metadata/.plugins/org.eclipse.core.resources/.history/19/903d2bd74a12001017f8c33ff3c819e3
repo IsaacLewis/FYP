@@ -1,0 +1,13 @@
+package me.saac.i;
+import me.saac.i.GameState.*;
+import me.saac.i.GameInfo.*;
+
+public class GameStateTest {
+    public static void main(String[] args) {
+    GameInfo gi = new GameInfo(10, new Card[2], Dealer.PLAYER);
+	GameState gs = new GameState(NodeType.CHANCE, BettingRound.FLOP, 100, 200, new Card[3], gi);
+	GameState gs2 = gs.successorState(null);
+	GameState gs3 = gs.successorState(Action.RAISE);
+	System.out.println("1: " + gs.print() + "\n2: " + gs2.print() + "\n3: " + gs3.print());
+    }
+}

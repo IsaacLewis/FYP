@@ -1,0 +1,64 @@
+package me.saac.i;
+import java.net.*;
+import java.io.*;
+import java.util.regex.*;
+
+public class Client {
+    static int portOffset = 7000;
+    static int inputLength = 124;
+
+    static Pattern inputPrompt = Pattern.compile("your move?");
+    static String shutdownMsg = "SHUTDOWN";
+
+    public static void main(String[] args) throws Exception {
+	int playerNo = Integer.parseInt(args[0].trim());
+	int port = portOffset + playerNo;
+	
+	Socket socket = new Socket("localhost", port);
+	BufferedReader in = 
+	    new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	PrintWriter out = 
+	    new PrintWriter(socket.getOutputStream(), true);
+	
+	out.print("My name is JavaBot");
+	out.flush();
+
+	char[] cbuf = new char[inputLength];
+	String input;
+
+	while(true) {
+	    if (in.ready()) {
+		in.read(cbuf, 0, inputLength);
+		input = new String(cbuf);
+		input = input.trim();
+		if(inputPrompt.matcher(input).find()) {
+		    out.print(getAction(input));
+		    out.flush();
+		} else if (input.equals(shutdownMsg)) {
+		    socket.close();
+		    System.exit(0);
+		}
+	    }
+	}
+    }
+
+    static void receive(String str) {
+	System.out.println("Received '" + str + "'");
+    }
+
+    static char getAction(String str) {
+	int rnd = (int) (Math.random() * 3);
+	char result = 'x';
+
+	switch(rnd) {
+	case 0 : 
+	    result = 'c'; break;
+	case 1 : 
+	    result =  'r'; break;
+	case 2 : 
+	    result = 'c';
+	}
+
+	return result;
+    }
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="GameState.NodeType"/>
+<fullyQualifiedTypeName name="me.saac.i.GameState.NodeType"/>
+<fullyQualifiedTypeName name="me.saac.i.GameInfo.Dealer"/>
+<fullyQualifiedTypeName name="me.saac.i.GameState.BettingRound"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="me.saac.i.GameState.Action"/>
+</qualifiedTypeNameHistroy>

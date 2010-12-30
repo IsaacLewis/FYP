@@ -1,0 +1,12 @@
+require "client.rb"
+
+class TerminalClient < Client
+  def receive(str)
+    puts str.chomp
+  end
+
+  def get_action(str)
+    puts str.strip
+    STDIN.gets.chomp
+  end
+end

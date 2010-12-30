@@ -1,0 +1,16 @@
+package me.saac.i;
+import java.util.ArrayList;
+
+import me.saac.i.GameState.*;
+import me.saac.i.GameInfo.*;
+
+public class GameStateTest {
+    public static void main(String[] args) {
+    GameInfo gi = new GameInfo(10, new Card[2], Dealer.OPPONENT);
+    ArrayList<Action> ah = new ArrayList<Action>();
+	GameState gs = new GameState(NodeType.CHANCE, BettingRound.TURN, 0, 0, new Card[3], ah, gi);
+	GameState gs2 = gs.successorState(null);
+	GameState gs3 = gs2.successorState(Action.RAISE);
+	System.out.println("1: " + gs.print() + "\n2: " + gs2.print() + "\n3: " + gs3.print());
+    }
+}

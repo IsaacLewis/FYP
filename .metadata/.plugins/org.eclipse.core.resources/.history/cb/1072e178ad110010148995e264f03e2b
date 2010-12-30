@@ -1,0 +1,6 @@
+public class GameStateTest {
+    public static void main(String[] args) {
+	GameState gs = new GameState(NodeType.PLAYER, BettingRound.FLOP, 100, 200, new Card[3]);
+	System.out.println("Hi: " + gs.playerBetAmount);
+    }
+}

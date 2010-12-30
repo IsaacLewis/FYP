@@ -1,0 +1,25 @@
+* AI
+** read some papers
+** implement Miximix
+*** EV function
+**** opponent modelling
+***** read data
+***** output probabilities
+**** showdown EV
+***** find out how to calculate win %
+**  rig up to AI
+*** Generate state from current input and find EV of children
+**** add variables to client object to represent relevant state
+**** update variables on input
+** think about data requirement, where to obtain
+
+* web_client
+** nicer-looking buttons
+** no screen reload after clicking buttons
+** debug mode
+** make more clear what is happening
+
+* misc
+** automated startup script for testing
+
+

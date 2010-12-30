@@ -1,0 +1,211 @@
+package me.saac.i;
+
+import java.util.ArrayList;
+
+import me.saac.i.GameInfo.Dealer;
+
+class GameState {
+	public static int max_number_of_raises = 4;
+	
+    public enum NodeType { PLAYER, OPPONENT, CHANCE, SHOWDOWN };
+    public enum BettingRound { FLOP, TURN, RIVER };
+    public enum Action { CHECK, RAISE, FOLD, DEAL };
+    
+    final NodeType nodeType;
+    final BettingRound bettingRound;
+    final int playerBetAmount;
+    final int opponentBetAmount;
+    final Card[] cardsOnTable;
+    final ArrayList<Action> actionHistory;
+    
+    // object that contains fixed data about the game, such as blind size
+    // and who is dealer (varies from game to game, but not state to state)
+    final GameInfo gameInfo;
+ 
+    public GameState(NodeType nt, BettingRound br, int pba, int oba, Card[] cot, ArrayList<Action> ah, GameInfo gi) { 
+	this.nodeType = nt;
+	this.bettingRound = br;
+	this.playerBetAmount = pba;
+	this.opponentBetAmount = oba; 
+	this.cardsOnTable = cot;
+	this.actionHistory = ah;
+	this.gameInfo = gi;
+    }
+    
+    public String print() {
+    	String actionString = "";
+    	for(Action a : actionHistory) {
+    		actionString += a + "-";
+    	}
+    	
+    	return "Type: " + nodeType + " Round: " + bettingRound + " Player Bet: " + playerBetAmount +
+    		" Opponent Bet: " + opponentBetAmount + " History: " + actionString;
+    }
+    
+    public int EV() {
+    	int ev = 0;
+    	int ev_fold;
+    	int ev_check;
+    	int ev_raise;
+    	switch(nodeType) {
+    	case SHOWDOWN :
+    		ev = opponentBetAmount;
+    		break;
+    		
+    	case CHANCE :
+    		ev = successorState(null).EV();
+    		break;
+    		
+    	case PLAYER :
+    		ev_fold = -playerBetAmount;
+    		ev_check = successorState(Action.CHECK).EV();
+    		ev_raise = ev_check; // successorState(Action.RAISE).EV();
+    		ev = Math.max(Math.max(ev_fold, ev_check), ev_raise);
+    		break;
+    	
+		case OPPONENT :
+    		ev_fold = -opponentBetAmount;
+    		ev_check = successorState(Action.CHECK).EV();
+    		ev_raise = ev_check; // successorState(Action.RAISE).EV();
+    		ev = Math.min(Math.min(ev_fold, ev_check), ev_raise);
+    		break;
+    	}
+    	return ev;
+    }
+    
+    public GameState successorState(Action action) {
+    	GameState successor = this;
+    	ArrayList<Action> newActionHistory = (ArrayList<Action>) this.actionHistory.clone();
+    	switch(nodeType) {
+    	case SHOWDOWN : 
+    		System.out.println("ERROR: Showdown nodes do not have successors");
+    		break;
+    		
+    	case CHANCE :
+    		// successor of a chance node is a PLAYER node (if PLAYER is the dealer)
+    		// or OPPONENT node (if OPPONENT is the dealer)
+    		// TODO: account for cards on table (should be multiple successor states)
+    		NodeType newNodeType;
+    		if (gameInfo.dealer == Dealer.PLAYER)
+    			newNodeType = NodeType.PLAYER;
+    		else
+    			newNodeType = NodeType.OPPONENT;
+
+    		newActionHistory.add(Action.DEAL);
+    		successor = new GameState(newNodeType, this.bettingRound, this.playerBetAmount,	this.opponentBetAmount, 
+    				this.cardsOnTable, newActionHistory, this.gameInfo);
+    		break;
+    	
+    	case PLAYER : 
+    		switch(action) {
+    			
+    		case FOLD :
+        		System.out.println("ERROR: No need to generate states when folding - " +
+        				"can simply return playerBetAmount or opponentBetAmount as EV");
+        		break;
+        		
+    		case RAISE :
+    			// successor of a player node when raising is an opponent node,
+    			// with playerBetAmount increased appropriately
+    			int newPlayerBetAmount = playerBetAmount;
+    			if(bettingRound == BettingRound.FLOP)
+    				newPlayerBetAmount += gameInfo.smallBetSize;
+    			else
+    				newPlayerBetAmount += (gameInfo.smallBetSize * 2);
+    			
+        		newActionHistory.add(Action.RAISE);
+    			successor = new GameState(NodeType.OPPONENT, this.bettingRound, newPlayerBetAmount, 
+    					this.opponentBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    			break;
+    			
+    		case CHECK : 
+    			newActionHistory.add(Action.CHECK);
+    			// note that we set the players bet amount to be equal to the opponent bet amount
+    			// regardless of what happens
+    			if(bettingRoundFinished(newActionHistory)) {
+    				switch(bettingRound) {
+    				case RIVER :
+    	    			successor = new GameState(NodeType.SHOWDOWN, this.bettingRound, this.opponentBetAmount, 
+    	    					this.opponentBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    	    			break;
+    	    			
+    				case TURN :
+    	    			successor = new GameState(NodeType.CHANCE, BettingRound.RIVER, this.opponentBetAmount, 
+    	    					this.opponentBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    	    			break;
+    	    			
+    				case FLOP :
+    	    			successor = new GameState(NodeType.CHANCE, BettingRound.TURN, this.opponentBetAmount, 
+    	    					this.opponentBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    	    			break;
+    				}
+    			} else {
+    				successor = new GameState(NodeType.OPPONENT, this.bettingRound, this.opponentBetAmount, 
+	    					this.opponentBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    			}
+    		}
+    		break;
+    		
+    	case OPPONENT : 
+    		switch(action) {
+    		case FOLD :
+        		System.out.println("ERROR: No need to generate states when folding - " +
+        				"can simply return playerBetAmount or opponentBetAmount as EV");
+        		break;
+        		
+    		case RAISE :
+    			// successor of a opponent node when raising is a player node
+    			// with opponentBetAmount increased appropriately
+    			int newOpponentBetAmount = opponentBetAmount;
+    			if(bettingRound == BettingRound.FLOP)
+    				newOpponentBetAmount += gameInfo.smallBetSize;
+    			else
+    				newOpponentBetAmount += (gameInfo.smallBetSize * 2);
+    			
+    			newActionHistory.add(Action.RAISE);	
+    			successor = new GameState(NodeType.PLAYER, this.bettingRound, this.playerBetAmount,
+    					newOpponentBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    			break;
+    			
+    		case CHECK :
+    			newActionHistory.add(Action.CHECK);
+    			// note that we set the opponent bet amount to be equal to the players bet amount
+    			// regardless of what happens
+    			if(bettingRoundFinished(newActionHistory)) {
+    				switch(bettingRound) {
+    				case RIVER :
+    	    			successor = new GameState(NodeType.SHOWDOWN, this.bettingRound, this.playerBetAmount, 
+    	    					this.playerBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    	    			break;
+    	    			
+    				case TURN :
+    	    			successor = new GameState(NodeType.CHANCE, BettingRound.RIVER, this.playerBetAmount, 
+    	    					this.playerBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    	    			break;
+    	    			
+    				case FLOP :
+    	    			successor = new GameState(NodeType.CHANCE, BettingRound.TURN, this.playerBetAmount, 
+    	    					this.playerBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    	    			break;
+    				}
+    			} else {
+    				successor = new GameState(NodeType.PLAYER, this.bettingRound, this.playerBetAmount, 
+	    					this.playerBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    			}
+    		}
+    		break;
+    	}
+    	return successor;
+    }
+    
+    private boolean bettingRoundFinished(ArrayList<Action> actionHistory) {
+    	// check that both players have acted this betting round
+    	// (in other words, neither of the last two actions should be "DEAL")
+    	int size = actionHistory.size();
+    	// System.out.println(actionHistory.get(size - 2) + "-" + actionHistory.get(size - 1));
+    	return (size >= 2) && (actionHistory.get(size - 2) != Action.DEAL) &&
+    		(actionHistory.get(size - 1) != Action.DEAL);
+    }
+    
+    // TODO: reachedMaxRaises()
+}

@@ -1,0 +1,62 @@
+
+class RankedHand
+  attr_reader :rank
+
+  include Comparable
+
+  def <=>(compared_hand)
+    Poker::Hands.index(self.rank) <=> Poker::Hands.index(compared_hand.rank)
+  end
+
+  def initialize(cards)
+    @cards = cards
+
+    if @cards.size > 5
+      @rank = @cards.combination(5).map {|subset| RankedHand.new subset}.max.rank
+      return
+    end
+
+    # groups cards by ranks, then sorts them, largest groups first
+    rank_sets = cards.group_by {|card| card.rank}.values.sort do 
+      |x, y| y.size <=> x.size
+    end
+
+    if is_straight? and is_flush?
+      @rank = :straight_flush
+    elsif rank_sets[0].length == 4
+      @rank = :quads
+    elsif rank_sets[0].length == 3 and rank_sets[1].length == 2
+        @rank = :full_house
+    elsif is_flush?
+      @rank = :flush
+    elsif is_straight?
+      @rank = :straight
+    elsif rank_sets[0].length == 3
+        @rank = :trips
+    elsif rank_sets[0].length == 2
+      if rank_sets[1].length == 2
+        @rank = :two_pair
+      else
+        @rank = :pair
+      end
+    else
+      @rank = :high_card
+    end
+  end
+
+  def is_flush?
+    return @flush unless @flush.nil?
+    @flush = @cards.all? {|card| card.suit == @cards[0].suit}
+    return @flush
+  end
+
+  def is_straight?
+    return @straight unless @straight.nil?
+    @straight = @cards.sort_by do |card| 
+      card.rank_index
+    end.each_cons(2).all? do |card1, card2|
+      card1.rank_index + 1 == card2.rank_index
+    end
+    return @straight
+  end
+end

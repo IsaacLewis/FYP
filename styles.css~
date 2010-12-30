@@ -1,0 +1,78 @@
+.card {
+background-color: #ffe;
+width: 50px;
+height: 80px;
+display: inline;
+font-size: 36px;
+padding: 14px 7px 14px 7px;
+margin: 2px;
+}
+
+.chips {
+font-size: 18px;
+display:inline;
+padding: 3px 12px 3px 12px;
+}
+
+.micro {
+background-color: #151;
+color: #111;
+}
+
+.small {
+background-color: #b22;
+color: #111;
+}
+
+.medium {
+background-color: #229;
+color: #ffe;
+}
+
+.big {
+background-color: #111;
+color: #994;
+}
+
+
+.card-container {
+height: 100px;
+vertical-align: center;
+text-align: center;
+}
+
+.name_container {
+height: 80px;
+font-size: 24px;
+}
+
+#board-box {
+background-color: #474;
+padding: 30px;
+width: 400px;
+position: absolute;
+top: 50px;
+}
+
+
+#info-box {
+background-color: #585;
+position: absolute;
+left: 480px;
+top: 50px;
+width: 400px;
+padding: 5px;
+}
+
+body { 
+background-color: #fff; 
+color: #282828; 
+}
+
+body, p, ol, ul, td {
+background-color: #669966;
+font-family: verdana, arial, helvetica, sans-serif;
+font-size:   13px;
+line-height: 18px;
+}
+
