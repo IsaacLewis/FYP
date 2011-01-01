@@ -1,0 +1,110 @@
+package me.saac.i;
+import java.net.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.regex.*;
+
+import me.saac.i.GameInfo.Dealer;
+import me.saac.i.GameState.Action;
+import me.saac.i.GameState.BettingRound;
+import me.saac.i.GameState.NodeType;
+
+public class Client {
+    static int portOffset = 7000;
+    static int inputLength = 124;
+
+    static Pattern newHandMsg = Pattern.compile("Hand No: ");
+    static Pattern inputPrompt = Pattern.compile("your move?");
+    static Pattern betSizeMsg = Pattern.compile("Small bet: ([0-9])+");
+    static Pattern dealerMsg = Pattern.compile("Dealer: ()+")
+    static String shutdownMsg = "SHUTDOWN";
+
+    static String name = "JavaBot";
+    static BettingRound bettingRound;
+    static ArrayList<Action> actionHistory;
+    static Card[] cardsOnTable;
+    static GameInfo gameInfo;
+    static int playerBetAmount;
+    static int opponentBetAmount;
+    static int smallBetSize;
+    
+    public static void main(String[] args) throws Exception {
+	int playerNo = Integer.parseInt(args[0].trim());
+	int port = portOffset + playerNo;
+	
+	Socket socket = new Socket("localhost", port);
+	BufferedReader in = 
+	    new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	PrintWriter out = 
+	    new PrintWriter(socket.getOutputStream(), true);
+	
+	out.print("My name is " + name);
+	out.flush();
+
+	char[] cbuf = new char[inputLength];
+	String input;
+
+	while(true) {
+		try {
+			if (in.ready()) {
+				in.read(cbuf, 0, inputLength);
+				input = new String(cbuf);
+				input = input.trim();
+				receive(input);
+				if(inputPrompt.matcher(input).find()) {
+					out.print(getAction(input));
+					out.flush();
+				} else if (input.equals(shutdownMsg)) {
+					socket.close();
+					System.exit(0);
+				}
+			}
+		} catch(Exception e) {
+			socket.close();
+			System.exit(0);
+		}
+	}
+    }
+
+    static void receive(String str) {
+	System.out.println("Received '" + str + "'");
+	
+	Matcher betSizeMatcher = betSizeMsg.matcher(str);
+	
+	if(newHandMsg.matcher(str).find()) {
+		resetStateVariables();
+		System.out.println("Resetting vars for new hand");
+	} else if(betSizeMatcher.find()) {
+		smallBetSize = Integer.parseInt(betSizeMatcher.group(1));
+		System.out.println("smallBetSize <- " + smallBetSize);
+	}
+    }
+
+    static char getAction(String str) {
+    GameState currentState = new GameState(NodeType.PLAYER, BettingRound.RIVER, playerBetAmount, 
+    		opponentBetAmount, cardsOnTable, actionHistory, gameInfo);
+    System.out.println(currentState.EV());
+	int rnd = (int) (Math.random() * 3);
+	char result = 'x';
+
+	switch(rnd) {
+	case 0 : 
+	    result = 'c'; break;
+	case 1 : 
+	    result =  'r'; break;
+	case 2 : 
+	    result = 'c';
+	}
+
+	return result;
+    }
+    
+    static void resetStateVariables() {
+        bettingRound = BettingRound.PREFLOP;
+        actionHistory = new ArrayList<Action>();
+        cardsOnTable = new Card[0];
+        playerBetAmount = 0;
+        opponentBetAmount = 0;
+        gameInfo = new GameInfo(10, new Card[2], Dealer.PLAYER);
+        }
+}

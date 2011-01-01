@@ -1,0 +1,22 @@
+Received 'Two players have connected. RandomBot and JavaBot, get ready to fight. The battleground: HEADS-UP LIMIT HOLDEM!'
+Received '-------'
+Received 'Hand No: 1'
+Resetting vars for new hand
+Received 'Dealer: JavaBot'
+dealer <- PLAYER
+Received 'Small bet: 2'
+smallBetSize <- 2
+Received 'Chips: 50,0,0,0,50'
+playerBetAmount <- 0
+opponentBetAmount <- 0
+Received 'JavaBot is dealt the 9 of Spades and the 8 of Diamonds (9s,8d).'
+Received 'JavaBot is the small blind, they post 1 chips.'
+Received 'Chips: 50,0,0,1,49'
+playerBetAmount <- 1
+opponentBetAmount <- 0
+Received 'RandomBot is the big blind, they post 2 chips.'
+Received 'Chips: 48,2,0,1,49'
+playerBetAmount <- 1
+opponentBetAmount <- 2
+Received 'JavaBot, your move? (c)heck/call (1), bet/(r)aise (3), (f)old:'
+Type: PLAYER Round: PREFLOP Player Bet: 1 Opponent Bet: 2 History: 

@@ -10,20 +10,20 @@ public class GameStateTest {
     ArrayList<Action> ah = new ArrayList<Action>();
     ArrayList<GameState> gs = new ArrayList<GameState>();
 	gs.add(new GameState(NodeType.CHANCE, BettingRound.FLOP, 0, 0, new Card[3], ah, gi));
-	gs.add(gs.get(gs.size() - 1).successorState(null));
-	gs.add(gs.get(gs.size() - 1).successorState(Action.CHECK));
-	gs.add(gs.get(gs.size() - 1).successorState(Action.CHECK));
-	gs.add(gs.get(gs.size() - 1).successorState(null));
-	gs.add(gs.get(gs.size() - 1).successorState(Action.CHECK));
-	gs.add(gs.get(gs.size() - 1).successorState(Action.RAISE));
-	gs.add(gs.get(gs.size() - 1).successorState(Action.RAISE));
-	gs.add(gs.get(gs.size() - 1).successorState(Action.RAISE));
-	gs.add(gs.get(gs.size() - 1).successorState(Action.RAISE));
-	gs.add(gs.get(gs.size() - 1).successorState(Action.RAISE));
-	gs.add(gs.get(gs.size() - 1).successorState(Action.CHECK));
-	gs.add(gs.get(gs.size() - 1).successorState(null));
-	gs.add(gs.get(gs.size() - 1).successorState(Action.CHECK));
-	gs.add(gs.get(gs.size() - 1).successorState(Action.CHECK));
+	gs.add(gs.get(gs.size() - 1).successor(null));
+	gs.add(gs.get(gs.size() - 1).successor(Action.CHECK));
+	gs.add(gs.get(gs.size() - 1).successor(Action.CHECK));
+	gs.add(gs.get(gs.size() - 1).successor(null));
+	gs.add(gs.get(gs.size() - 1).successor(Action.CHECK));
+	gs.add(gs.get(gs.size() - 1).successor(Action.RAISE));
+	gs.add(gs.get(gs.size() - 1).successor(Action.RAISE));
+	gs.add(gs.get(gs.size() - 1).successor(Action.RAISE));
+	gs.add(gs.get(gs.size() - 1).successor(Action.RAISE));
+	gs.add(gs.get(gs.size() - 1).successor(Action.RAISE));
+	gs.add(gs.get(gs.size() - 1).successor(Action.CHECK));
+	gs.add(gs.get(gs.size() - 1).successor(null));
+	gs.add(gs.get(gs.size() - 1).successor(Action.CHECK));
+	gs.add(gs.get(gs.size() - 1).successor(Action.CHECK));
 	for(GameState g : gs) {
 		System.out.println(g.print() + "\nEV: " + g.EV());
 	}

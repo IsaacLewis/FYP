@@ -7,6 +7,7 @@ class Player
   include ChipStoreModule
 
   def initialize(port)
+    @port = port
     @sock = TCPServer.new('localhost', port)
     @session = @sock.accept
     input = @session.recvfrom 124
@@ -21,14 +22,18 @@ class Player
   def discard
     @hand = []
   end
-
+  
   def send(str)
-    @session.send(str.ljust(124), 0)
+    begin
+      @session.send(str.ljust(124), 0)
+    rescue Exception => e
+      puts "There was an error sending on port #{@port}"
+    end  
   end
 
   def input_action(call_cost, raise_cost)
-    @session.send "#{name}, your move? " +
-      "(c)heck/call (#{call_cost}), bet/(r)aise (#{raise_cost}), (f)old: ", 0
+    send "#{name}, your move? " +
+      "(c)heck/call (#{call_cost}), bet/(r)aise (#{raise_cost}), (f)old: "
     input = @session.recvfrom 124
     input[0]
   end

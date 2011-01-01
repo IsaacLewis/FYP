@@ -26,11 +26,10 @@ class GameState {
 	this.nodeType = nt;
 	this.bettingRound = br;
 	this.playerBetAmount = pba;
-	this.opponentBetAmount = oba; 
+	this.opponentBetAmount = oba;
 	this.cardsOnTable = cot;
 	this.actionHistory = ah;
 	this.gameInfo = gi;
-	System.out.println(this.print());
     }
     
     public String print() {   	
@@ -54,28 +53,28 @@ class GameState {
     		break;
     		
     	case CHANCE :
-    		ev = successorState(null).EV();
+    		ev = successor(null).EV();
     		break;
     		
     	case PLAYER :
     		ev_fold = -playerBetAmount;
-    		ev_check = successorState(Action.CHECK).EV();
+    		ev_check = successor(Action.CHECK).EV();
     		if(reachedMaxRaises()) {
     			ev = Math.max(ev_fold, ev_check);
     		} else {
-    			ev_raise = successorState(Action.RAISE).EV();
+    			ev_raise = successor(Action.RAISE).EV();
     			ev = Math.max(Math.max(ev_fold, ev_check), ev_raise);
     		}
     		break;
     	
 		case OPPONENT :
     		ev_fold = opponentBetAmount;
-    		ev_check = successorState(Action.CHECK).EV();
+    		ev_check = successor(Action.CHECK).EV();
     		
     		if(reachedMaxRaises()) {
     			ev = Math.min(ev_fold, ev_check);
     		} else {
-    			ev_raise = successorState(Action.RAISE).EV();
+    			ev_raise = successor(Action.RAISE).EV();
     			ev = Math.min(Math.min(ev_fold, ev_check), ev_raise);
     		}
     		break;
@@ -83,7 +82,7 @@ class GameState {
     	return ev;
     }
     
-    public GameState successorState(Action action) {
+    public GameState successor(Action action) {
     	GameState successor = this;
     	ArrayList<Action> newActionHistory = (ArrayList<Action>) this.actionHistory.clone();
     	switch(nodeType) {

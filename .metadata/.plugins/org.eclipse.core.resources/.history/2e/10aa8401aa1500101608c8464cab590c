@@ -1,0 +1,31 @@
+package me.saac.i;
+import java.util.ArrayList;
+
+import me.saac.i.GameState.*;
+import me.saac.i.GameInfo.*;
+
+public class GameStateTest {
+    public static void main(String[] args) {
+    GameInfo gi = new GameInfo(10, new Card[2], Dealer.PLAYER);
+    ArrayList<Action> ah = new ArrayList<Action>();
+    ArrayList<GameState> gs = new ArrayList<GameState>();
+	gs.add(new GameState(NodeType.CHANCE, BettingRound.FLOP, 0, 0, new Card[3], ah, gi));
+	gs.add(gs.get(gs.size() - 1).successorState(null));
+	gs.add(gs.get(gs.size() - 1).successorState(Action.CHECK));
+	gs.add(gs.get(gs.size() - 1).successorState(Action.CHECK));
+	gs.add(gs.get(gs.size() - 1).successorState(null));
+	gs.add(gs.get(gs.size() - 1).successorState(Action.CHECK));
+	gs.add(gs.get(gs.size() - 1).successorState(Action.RAISE));
+	gs.add(gs.get(gs.size() - 1).successorState(Action.RAISE));
+	gs.add(gs.get(gs.size() - 1).successorState(Action.RAISE));
+	gs.add(gs.get(gs.size() - 1).successorState(Action.RAISE));
+	gs.add(gs.get(gs.size() - 1).successorState(Action.RAISE));
+	gs.add(gs.get(gs.size() - 1).successorState(Action.CHECK));
+	gs.add(gs.get(gs.size() - 1).successorState(null));
+	gs.add(gs.get(gs.size() - 1).successorState(Action.CHECK));
+	gs.add(gs.get(gs.size() - 1).successorState(Action.CHECK));
+	for(GameState g : gs) {
+		System.out.println(g.print() + "\nEV: " + g.EV());
+	}
+    }
+}

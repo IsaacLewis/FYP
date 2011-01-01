@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;me.saac.i.GameState.successorState(...)&apos; to &apos;successor&apos;&#x0A;- Original project: &apos;ai&apos;&#x0A;- Original element: &apos;me.saac.i.GameState.successorState(...)&apos;&#x0A;- Renamed element: &apos;me.saac.i.GameState.successor(...)&apos;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;successorState&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/&lt;me.saac.i{GameState.java[GameState~successorState~QAction;" name="successor" references="true" stamp="1293888073566" version="1.0"/>
+</session>

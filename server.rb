@@ -65,7 +65,12 @@ class PokerServer
 
   def close
     send "SHUTDOWN"
-    $players.each &:shutdown
-    $server = nil
+    $players.each do |player|
+      begin
+        player.shutdown
+      rescue
+        "Error when attempting to shutdown port assigned to #{player.name}"
+      end
+    end
   end
 end

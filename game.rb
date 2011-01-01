@@ -113,22 +113,22 @@ class Game
     when "c"
       if player.bet.chips < opponent.bet.chips
         player.give_chips player.bet, call_cost
-        $server.send "#{player.name} calls."
+        $server.send "Player action: #{player.name} calls."
       else
-        $server.send "#{player.name} checks."
+        $server.send "Player action: #{player.name} checks."
       end
       
     when "r", "b"
       player.give_chips player.bet, raise_cost
       if opponent.bet.chips == 0
-        $server.send "#{player.name} bets #{player.bet.chips}."
+        $server.send "Player action: #{player.name} bets #{player.bet.chips}."
       else
-        $server.send "#{player.name} raises to #{player.bet.chips}."
+        $server.send "Player action: #{player.name} raises to #{player.bet.chips}."
       end
       
     when "f"
       @players.each {|p| p.bet.give_chips @pot, :all}
-      $server.send "#{player.name} folds!"
+      $server.send "Player action: #{player.name} folds!"
       game_won_by opponent
 
     end
@@ -142,17 +142,17 @@ class Game
   end
 
   def flop
-    $server.send "Dealing the flop..."
+    $server.send "Dealing the flop"
     3.times {deal_to_board}
   end
 
   def turn
-    $server.send "Dealing the turn..."
+    $server.send "Dealing the turn"
     deal_to_board
  end
 
   def river
-    $server.send "Dealing the river..."
+    $server.send "Dealing the river"
     deal_to_board
   end
 
