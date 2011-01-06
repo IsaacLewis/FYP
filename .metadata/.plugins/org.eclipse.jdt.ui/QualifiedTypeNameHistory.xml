@@ -6,4 +6,6 @@
 <fullyQualifiedTypeName name="me.saac.i.GameState.Action"/>
 <fullyQualifiedTypeName name="me.saac.i.GameState.NodeType"/>
 <fullyQualifiedTypeName name="me.saac.i.GameInfo.Dealer"/>
+<fullyQualifiedTypeName name="pokerai.game.eval.spears.SevenCardEvaluator"/>
+<fullyQualifiedTypeName name="pokerai.game.eval.spears.Card"/>
 </qualifiedTypeNameHistroy>

@@ -2,6 +2,9 @@ package me.saac.i;
 
 import java.util.ArrayList;
 
+import pokerai.game.eval.spears.Card;
+import pokerai.game.eval.spears.SevenCardEvaluator;
+
 import me.saac.i.GameInfo.Dealer;
 
 class GameState {
@@ -15,19 +18,19 @@ class GameState {
     final BettingRound bettingRound;
     final int playerBetAmount;
     final int opponentBetAmount;
-    final Card[] cardsOnTable;
+    final CardArray knownCards;
     final ArrayList<Action> actionHistory;
     
     // object that contains fixed data about the game, such as blind size
     // and who is dealer (varies from game to game, but not state to state)
     final GameInfo gameInfo;
  
-    public GameState(NodeType nt, BettingRound br, int pba, int oba, Card[] cot, ArrayList<Action> ah, GameInfo gi) { 
+    public GameState(NodeType nt, BettingRound br, int pba, int oba, CardArray kc, ArrayList<Action> ah, GameInfo gi) { 
 	this.nodeType = nt;
 	this.bettingRound = br;
 	this.playerBetAmount = pba;
 	this.opponentBetAmount = oba;
-	this.cardsOnTable = cot;
+	this.knownCards = kc;
 	this.actionHistory = ah;
 	this.gameInfo = gi;
     }
@@ -39,17 +42,22 @@ class GameState {
     	}
     	
     	return "Type: " + nodeType + " Round: " + bettingRound + " Player Bet: " + playerBetAmount +
-    		" Opponent Bet: " + opponentBetAmount + " History: " + actionString;
+    		" Opponent Bet: " + opponentBetAmount + " knownCards: " + knownCards.count + " History: " + actionString;
     }
     
-    public int EV() {
-    	int ev = 0;
-    	int ev_fold;
-    	int ev_check;
-    	int ev_raise;
+    public double EV() {
+    	double ev = 0;
+    	double ev_fold;
+    	double ev_check;
+    	double ev_raise;
     	switch(nodeType) {
     	case SHOWDOWN :
-    		ev = opponentBetAmount;
+    		if(knownCards.getCount() == 7) {
+    			ev = knownCards.evaluate();
+    			// System.out.println("EV: " + ev + " " + print());
+    		} else {
+    			ev = opponentBetAmount;
+    		}
     		break;
     		
     	case CHANCE :
@@ -72,10 +80,10 @@ class GameState {
     		ev_check = successor(Action.CHECK).EV();
     		
     		if(reachedMaxRaises()) {
-    			ev = Math.min(ev_fold, ev_check);
+    			ev = 0.5 * ev_fold + 0.5 * ev_check;
     		} else {
     			ev_raise = successor(Action.RAISE).EV();
-    			ev = Math.min(Math.min(ev_fold, ev_check), ev_raise);
+    			ev = 0.33 * ev_fold + 0.33 * ev_check + 0.34 * ev_raise;
     		}
     		break;
     	}
@@ -102,7 +110,7 @@ class GameState {
 
     		newActionHistory.add(Action.DEAL);
     		successor = new GameState(newNodeType, this.bettingRound, this.playerBetAmount,	this.opponentBetAmount, 
-    				this.cardsOnTable, newActionHistory, this.gameInfo);
+    				this.knownCards, newActionHistory, this.gameInfo);
     		break;
     	
     	case PLAYER : 
@@ -126,7 +134,7 @@ class GameState {
     			
         		newActionHistory.add(Action.RAISE);
     			successor = new GameState(NodeType.OPPONENT, this.bettingRound, newPlayerBetAmount, 
-    					this.opponentBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    					this.opponentBetAmount, this.knownCards, newActionHistory, this.gameInfo);
     			break;
     			
     		case CHECK : 
@@ -137,22 +145,22 @@ class GameState {
     				switch(bettingRound) {
     				case RIVER :
     	    			successor = new GameState(NodeType.SHOWDOWN, this.bettingRound, this.opponentBetAmount, 
-    	    					this.opponentBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    	    					this.opponentBetAmount, this.knownCards, newActionHistory, this.gameInfo);
     	    			break;
     	    			
     				case TURN :
     	    			successor = new GameState(NodeType.CHANCE, BettingRound.RIVER, this.opponentBetAmount, 
-    	    					this.opponentBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    	    					this.opponentBetAmount, this.knownCards, newActionHistory, this.gameInfo);
     	    			break;
     	    			
     				case FLOP :
     	    			successor = new GameState(NodeType.CHANCE, BettingRound.TURN, this.opponentBetAmount, 
-    	    					this.opponentBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    	    					this.opponentBetAmount, this.knownCards, newActionHistory, this.gameInfo);
     	    			break;
     				}
     			} else {
     				successor = new GameState(NodeType.OPPONENT, this.bettingRound, this.opponentBetAmount, 
-	    					this.opponentBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+	    					this.opponentBetAmount, this.knownCards, newActionHistory, this.gameInfo);
     			}
     		}
     		break;
@@ -178,7 +186,7 @@ class GameState {
     			
     			newActionHistory.add(Action.RAISE);	
     			successor = new GameState(NodeType.PLAYER, this.bettingRound, this.playerBetAmount,
-    					newOpponentBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    					newOpponentBetAmount, this.knownCards, newActionHistory, this.gameInfo);
     			break;
     			
     		case CHECK :
@@ -189,22 +197,22 @@ class GameState {
     				switch(bettingRound) {
     				case RIVER :
     	    			successor = new GameState(NodeType.SHOWDOWN, this.bettingRound, this.playerBetAmount, 
-    	    					this.playerBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    	    					this.playerBetAmount, this.knownCards, newActionHistory, this.gameInfo);
     	    			break;
     	    			
     				case TURN :
     	    			successor = new GameState(NodeType.CHANCE, BettingRound.RIVER, this.playerBetAmount, 
-    	    					this.playerBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    	    					this.playerBetAmount, this.knownCards, newActionHistory, this.gameInfo);
     	    			break;
     	    			
     				case FLOP :
     	    			successor = new GameState(NodeType.CHANCE, BettingRound.TURN, this.playerBetAmount, 
-    	    					this.playerBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+    	    					this.playerBetAmount, this.knownCards, newActionHistory, this.gameInfo);
     	    			break;
     				}
     			} else {
     				successor = new GameState(NodeType.PLAYER, this.bettingRound, this.playerBetAmount, 
-	    					this.playerBetAmount, this.cardsOnTable, newActionHistory, this.gameInfo);
+	    					this.playerBetAmount, this.knownCards, newActionHistory, this.gameInfo);
     			}
     		}
     		break;
@@ -216,7 +224,6 @@ class GameState {
     	// check that both players have acted this betting round
     	// (in other words, neither of the last two actions should be "DEAL")
     	int size = actionHistory.size();
-    	// System.out.println(actionHistory.get(size - 2) + "-" + actionHistory.get(size - 1));
     	return (size >= 2) && (actionHistory.get(size - 2) != Action.DEAL) &&
     		(actionHistory.get(size - 1) != Action.DEAL);
     }

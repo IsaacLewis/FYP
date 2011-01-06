@@ -40,6 +40,6 @@ class Client
   # when a response is required; should return "c", "r","b" or "f"
   def get_action(str)
     puts "Received '#{str.strip}'"
-    ["f","c","r"].choice
+    ["c","r"].choice
   end
 end

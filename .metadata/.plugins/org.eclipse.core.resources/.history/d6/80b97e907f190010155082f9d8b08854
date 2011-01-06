@@ -1,0 +1,15 @@
+package me.saac.i;
+import java.util.regex.*;
+
+public class RegexTest {
+	
+    public static void main(String[] args) {
+	Pattern p = Pattern.compile("is dealt [A-z0-9 ]+ \\((..),(..)\\)");
+	String s = "JavaBot is dealt the 2 of Spades and the Ace of Hearts (2s,Ah).";
+	Matcher m = p.matcher(s);
+	System.out.println("Matches: " + m.find());
+	System.out.println("Group: " + m.group(1));
+	System.out.println("Group: " + m.group(2));
+    }
+
+}

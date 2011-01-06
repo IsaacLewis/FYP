@@ -1,0 +1,13 @@
+package me.saac.i;
+
+import me.saac.i.GameState.Action;
+
+public class OpponentModel {
+	public int[] showdownStrength(Action[] history) {
+		return new int[] {0,0,5,5};
+	}
+	
+	public void input(Action[] history) {
+		
+	}
+}

@@ -1,0 +1,16 @@
+package me.saac.i;
+
+import me.saac.i.GameState.Action;
+import java.util.Hashtable;
+
+public class OpponentModel {
+	private Hashtable  
+	
+	public int[] showdownStrength(Action[] history) {
+		return new int[] {0,0,5,5};
+	}
+	
+	public void input(Action[] history) {
+		
+	}
+}

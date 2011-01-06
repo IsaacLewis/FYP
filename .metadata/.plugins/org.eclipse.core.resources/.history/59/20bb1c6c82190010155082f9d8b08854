@@ -1,0 +1,7 @@
+package me.saac.i;
+
+public class OpponentModel {
+	public double[] showdownStrength(Action[] history) {
+		
+	}
+}

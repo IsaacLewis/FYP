@@ -4,12 +4,10 @@ public class GameInfo {
 	public enum Dealer { PLAYER, OPPONENT };
 	
 	public int smallBetSize;
-	public Card[] playerHand;
 	public Dealer dealer;
 	
-	public GameInfo(int sbs, Card[] ph, Dealer d) {
+	public GameInfo(int sbs, Dealer d) {
 		smallBetSize = sbs;
-		playerHand = ph;
 		dealer = d;
 	}
 }

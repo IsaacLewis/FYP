@@ -1,0 +1,49 @@
+package me.saac.i;
+
+import pokerai.game.eval.spears.Card;
+import pokerai.game.eval.spears.FiveCardEvaluator;
+import pokerai.game.eval.spears.SevenCardEvaluator;
+
+public class CardArray {
+	static FiveCardEvaluator fce = new FiveCardEvaluator();
+	static SevenCardEvaluator sce = new SevenCardEvaluator();
+	
+	int count;
+	public Card[] cards;
+	
+	public CardArray() {
+		count = 0;
+		cards = new Card[7];
+	}
+
+	public CardArray(Card[] cards) {
+		count = cards.length;
+		this.cards = cards;
+	}
+	
+	public void add(Card c) {
+		cards[count] = c;
+		count++;
+	}
+	
+	public int getCount() {
+		return count;
+	}
+	
+	public int evaluate(){
+		int result = 0;
+		if(count == 5) 
+			result = fce.evaluate(cards);
+		else 
+			result = sce.evaluate(cards);
+		return result;
+	}
+	
+	public CardArray subset(int start, int end) {
+		Card[] newCards = new Card[end - start];
+		for(int i = start; i <= end; i++) {
+			newCards[i - start] = cards[i];
+		}
+		return new CardArray(newCards);
+	}
+}

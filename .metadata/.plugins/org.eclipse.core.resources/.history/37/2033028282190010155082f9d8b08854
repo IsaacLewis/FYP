@@ -1,0 +1,9 @@
+package me.saac.i;
+
+import me.saac.i.GameState.Action;
+
+public class OpponentModel {
+	public double[] showdownStrength(Action[] history) {
+		return {0,0,0.5,0.5};
+	}
+}

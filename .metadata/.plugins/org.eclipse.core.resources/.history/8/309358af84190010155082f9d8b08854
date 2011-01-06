@@ -1,0 +1,27 @@
+package me.saac.i;
+
+import pokerai.game.eval.spears.Card;
+import pokerai.game.eval.spears.FiveCardEvaluator;
+import pokerai.game.eval.spears.SevenCardEvaluator;
+
+public class CardArray {
+	static FiveCardEvaluator fce = new FiveCardEvaluator();
+	static SevenCardEvaluator sce = new SevenCardEvaluator();
+	
+	int count;
+	public Card[] cards;
+	
+	public CardArray() {
+		count = 0;
+		cards = new Card[7];
+	}
+	
+	public void add(Card c) {
+		cards[count] = c;
+		count++;
+	}
+	
+	public int getCount() {
+		return count;
+	}
+}

@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.regex.*;
 
+import pokerai.game.eval.spears.Card;
+
 import me.saac.i.GameInfo.Dealer;
 import me.saac.i.GameState.Action;
 import me.saac.i.GameState.BettingRound;
@@ -20,18 +22,21 @@ public class Client {
     static Pattern bettingRoundMsg = Pattern.compile("Dealing the ([A-z]+)");
     static Pattern chipDistributionMsg = Pattern.compile("Chips: [0-9]+,([0-9]+),([0-9]+),([0-9]+),[0-9]+");
     static Pattern playerActionMsg = Pattern.compile("Player action: [A-z0-9]+ ([A-z]+)");
+    static Pattern playerHandMsg = Pattern.compile("is dealt [A-z0-9 ]+ \\((..),(..)\\)");
+    static Pattern boardCardMsg = Pattern.compile("\\((..)\\) is dealt to the board");
+    static Pattern showdownMsg = Pattern.compile("Player ([A-z0-9]+) shows (..) (..)");
     
     static String name = "JavaBot";
     static BettingRound bettingRound;
     static ArrayList<Action> actionHistory;
-    static Card[] cardsOnTable;
-    static Card[] playerHand;
+    static CardArray knownCards;
     static GameInfo gameInfo;
     static Dealer dealer;
     static int playerBetAmount;
     static int opponentBetAmount;
     static int smallBetSize;
     static int playerNo;
+    static OpponentModel opponentModel = new OpponentModel();
     
     public static void main(String[] args) throws Exception {
 	playerNo = Integer.parseInt(args[0].trim());
@@ -65,7 +70,8 @@ public class Client {
 				}
 			}
 		} catch(Exception e) {
-			System.out.println("Caught exception: e");
+			System.out.println("Caught exception: ");
+			e.printStackTrace();
 			socket.close();
 			System.exit(0);
 		}
@@ -80,6 +86,9 @@ public class Client {
 	Matcher bettingRoundMatcher = bettingRoundMsg.matcher(str);
 	Matcher chipDistributionMatcher = chipDistributionMsg.matcher(str); 
 	Matcher playerActionMatcher = playerActionMsg.matcher(str);
+	Matcher playerHandMatcher = playerHandMsg.matcher(str);
+	Matcher boardCardMatcher = boardCardMsg.matcher(str);
+	Matcher showdownMatcher = showdownMsg.matcher(str);
 	
 	if(str.substring(0,7).equals("Hand No")) {
 		resetStateVariables();
@@ -118,6 +127,7 @@ public class Client {
 		}
 		System.out.println("playerBetAmount <- " + playerBetAmount);
 		System.out.println("opponentBetAmount <- " + opponentBetAmount);
+		
 	} else if(playerActionMatcher.find()) {
 		String action = playerActionMatcher.group(1);
 		if(action.equals("calls") || action.equals("checks")) {
@@ -127,20 +137,42 @@ public class Client {
 		} else {
 			actionHistory.add(Action.FOLD);
 		}
+	
+	} else if(playerHandMatcher.find()) {
+		knownCards.add(Card.parse(playerHandMatcher.group(1)));
+		knownCards.add(Card.parse(playerHandMatcher.group(2)));
+		System.out.println("playerHand <- " + knownCards.cards[0].name() + " " + knownCards.cards[1].name());
+		
+	} else if(boardCardMatcher.find()) {
+		knownCards.add(Card.parse(boardCardMatcher.group(1)));
+		System.out.print("knownCards <- ");
+		for(int i = 0; i < knownCards.count; i++) {
+			System.out.print(knownCards.cards[i].toString());
+		}
+		System.out.println();
+		
+	} else if(showdownMatcher.find()) {
+		if(!showdownMatcher.group(1).equals(name)) {
+			CardArray opponentCards = knownCards.subset(2, 7);
+			opponentCards.add(Card.parse(showdownMatcher.group(2)));
+			opponentCards.add(Card.parse(showdownMatcher.group(3)));
+			
+			opponentModel.input(actionHistory, opponentCards.evaluate());
+		}
 	}
     }
 
     static char getAction(String str) {
     	char result = 'x';
-    	gameInfo = new GameInfo(smallBetSize, playerHand, dealer);
+    	gameInfo = new GameInfo(smallBetSize, dealer);
     	GameState currentState = new GameState(NodeType.PLAYER, bettingRound, playerBetAmount, 
-    		opponentBetAmount, cardsOnTable, actionHistory, gameInfo);
+    		opponentBetAmount, knownCards, actionHistory, gameInfo);
     	System.out.println(currentState.print());
     	if(bettingRound != BettingRound.PREFLOP) {
     		System.out.println(currentState.EV());
-    		int ev_fold = -playerBetAmount;
-    		int ev_check = currentState.successor(Action.CHECK).EV();
-    		int ev_raise = currentState.successor(Action.RAISE).EV();
+    		double ev_fold = -playerBetAmount;
+    		double ev_check = currentState.successor(Action.CHECK).EV();
+    		double ev_raise = currentState.successor(Action.RAISE).EV();
     		System.out.println("Fold EV: " + ev_fold + " Check EV: " + ev_check + " Raise EV: " + ev_raise);
     		if(ev_fold > ev_raise) { 
     			if(ev_fold > ev_check) result = 'f';
@@ -158,7 +190,7 @@ public class Client {
     static void resetStateVariables() {
         bettingRound = BettingRound.PREFLOP;
         actionHistory = new ArrayList<Action>();
-        cardsOnTable = new Card[0];
+        knownCards = new CardArray();
         playerBetAmount = 0;
         opponentBetAmount = 0;
         }

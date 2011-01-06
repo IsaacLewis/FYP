@@ -1,0 +1,18 @@
+package me.saac.i;
+
+import pokerai.game.eval.spears.Card;
+
+public class CardArray {
+	int count;
+	public Card[] cards;
+	
+	public CardArray() {
+		count = 0;
+		cards = new Card[7];
+	}
+	
+	public void add(Card c) {
+		cards[count] = c;
+		count++;
+	}
+}

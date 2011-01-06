@@ -1,0 +1,37 @@
+package me.saac.i;
+
+import me.saac.i.GameState.Action;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class OpponentModel {
+	private HashMap<Integer, int[]> historyToHandStrength = new HashMap<Integer, int[]>();
+	
+	public int[] showdownStrength(Action[] history) {
+		return new int[] {0,0,5,5};
+	}
+	
+	public void input(ArrayList<Action> history, int handStrength) {
+		int numRaises = 0;
+		for(Action a : history) {
+			if(a == Action.RAISE) {
+				numRaises++;
+			}
+		}
+		
+		int ahs = adjustedHandStrength(handStrength);
+		if(historyToHandStrength.get(numRaises) == null) {
+			int[] histogram = new int[] {0,0,0,0,0,0,0,0,0,0};
+			historyToHandStrength.put(numRaises, histogram);
+		}
+		int[] histogram = historyToHandStrength.get(numRaises);
+		histogram[ahs] = histogram[ahs] + 1;
+		
+		System.out.println("OpponentModel["+numRaises+"] <- " + histogram.toString());
+	}
+	
+	private int adjustedHandStrength(int rawHandStrength) {
+		return rawHandStrength / 10;
+	}
+}
