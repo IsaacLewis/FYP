@@ -66,12 +66,14 @@ class Game
   end
 
   def betting_round(bet_size)
+    @bets_this_round = 0
     player = @players[1]
     opponent = @players[0]
     @players.each {|p| p.acted = false}
-    while not @game_won and not @all_in and
-        (not player.acted or not opponent.acted or
-        player.bet.chips != opponent.bet.chips) 
+    while not @game_won and 
+    	  not @all_in and
+         (not player.acted or not opponent.acted or
+              player.bet.chips != opponent.bet.chips) 
 
 
       take_player_action player, opponent, bet_size
@@ -105,7 +107,13 @@ class Game
     raise_cost = (opponent.bet.chips + bet_size) - player.bet.chips
 
     action = nil
-    until ["c","r","f","b"].include? action
+    if @bets_this_round < Poker::MaxRaisesPerRound
+      permitted_actions = ["c","r","f","b"]
+    else
+      permitted_actions = ["c","f"]
+    end
+    
+    until permitted_actions.include? action
       action = player.input_action call_cost, raise_cost
     end
     
@@ -125,6 +133,7 @@ class Game
       else
         $server.send "Player action: #{player.name} raises to #{player.bet.chips}."
       end
+      @bets_this_round += 1
       
     when "f"
       @players.each {|p| p.bet.give_chips @pot, :all}

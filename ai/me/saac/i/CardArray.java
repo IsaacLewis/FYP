@@ -3,9 +3,11 @@ package me.saac.i;
 import pokerai.game.eval.spears.Card;
 import pokerai.game.eval.spears.FiveCardEvaluator;
 import pokerai.game.eval.spears.SevenCardEvaluator;
+import pokerai.game.eval.spears.SixCardEvaluator;
 
 public class CardArray {
 	static FiveCardEvaluator fce = new FiveCardEvaluator();
+	static SixCardEvaluator xce = new SixCardEvaluator();
 	static SevenCardEvaluator sce = new SevenCardEvaluator();
 	
 	int count;
@@ -34,7 +36,9 @@ public class CardArray {
 		int result = 0;
 		if(count == 5) 
 			result = fce.evaluate(cards);
-		else 
+		else if(count == 6)
+			result = xce.evaluate(cards);
+		else
 			result = sce.evaluate(cards);
 		return result;
 	}

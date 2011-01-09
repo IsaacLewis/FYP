@@ -8,7 +8,7 @@ import me.saac.i.GameInfo.*;
 
 public class GameStateTest {
     public static void main(String[] args) {
-    GameInfo gi = new GameInfo(10, Dealer.PLAYER);
+    GameInfo gi = new GameInfo(10, Dealer.PLAYER, new BasicOpponentModel());
     ArrayList<Action> ah = new ArrayList<Action>();
     ArrayList<GameState> gs = new ArrayList<GameState>();
 	gs.add(new GameState(NodeType.CHANCE, BettingRound.FLOP, 0, 0, new CardArray(), ah, gi));

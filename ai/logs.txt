@@ -9,7 +9,8 @@ smallBetSize <- 2
 Received 'Chips: 50,0,0,0,50'
 playerBetAmount <- 0
 opponentBetAmount <- 0
-Received 'JavaBot is dealt the 9 of Spades and the 8 of Diamonds (9s,8d).'
+Received 'JavaBot is dealt the Jack of Spades and the 4 of Spades (Js,4s).'
+playerHand <- JackOfSpades FourOfSpades
 Received 'JavaBot is the small blind, they post 1 chips.'
 Received 'Chips: 50,0,0,1,49'
 playerBetAmount <- 1
@@ -19,4 +20,219 @@ Received 'Chips: 48,2,0,1,49'
 playerBetAmount <- 1
 opponentBetAmount <- 2
 Received 'JavaBot, your move? (c)heck/call (1), bet/(r)aise (3), (f)old:'
-Type: PLAYER Round: PREFLOP Player Bet: 1 Opponent Bet: 2 History: 
+Type: PLAYER Round: PREFLOP Player Bet: 1 Opponent Bet: 2 knownCards: 2 History: 
+Received 'Player action: JavaBot calls.'
+Received 'Chips: 48,2,0,2,48'
+playerBetAmount <- 2
+opponentBetAmount <- 2
+Received 'Player action: RandomBot raises to 4.'
+Received 'Chips: 46,4,0,2,48'
+playerBetAmount <- 2
+opponentBetAmount <- 4
+Received 'JavaBot, your move? (c)heck/call (2), bet/(r)aise (4), (f)old:'
+Type: PLAYER Round: PREFLOP Player Bet: 2 Opponent Bet: 4 knownCards: 2 History: CHECK-RAISE-
+Received 'Player action: JavaBot calls.'
+Received 'Chips: 46,4,0,4,46'
+playerBetAmount <- 4
+opponentBetAmount <- 4
+Received 'Chips: 46,0,8,0,46'
+playerBetAmount <- 4
+opponentBetAmount <- 4
+Received 'Dealing the flop'
+bettingRound <- FLOP
+Received 'The Jack of Clubs (Jc) is dealt to the board.'
+knownCards <- Js4sJc
+Received 'The 7 of Hearts (7h) is dealt to the board.'
+knownCards <- Js4sJc7h
+Received 'The 9 of Clubs (9c) is dealt to the board.'
+knownCards <- Js4sJc7h9c
+Received 'JavaBot, your move? (c)heck/call (0), bet/(r)aise (2), (f)old:'
+Type: PLAYER Round: FLOP Player Bet: 4 Opponent Bet: 4 knownCards: 5 History: CHECK-RAISE-CHECK-DEAL-
+19.0
+Fold EV: -4.0 Check EV: 17.5 Raise EV: 19.0
+Received 'Player action: JavaBot bets 2.'
+Received 'Chips: 46,0,8,2,44'
+playerBetAmount <- 6
+opponentBetAmount <- 4
+Received 'Player action: RandomBot raises to 4.'
+Received 'Chips: 42,4,8,2,44'
+playerBetAmount <- 6
+opponentBetAmount <- 8
+Received 'JavaBot, your move? (c)heck/call (2), bet/(r)aise (4), (f)old:'
+Type: PLAYER Round: FLOP Player Bet: 6 Opponent Bet: 8 knownCards: 5 History: CHECK-RAISE-CHECK-DEAL-RAISE-RAISE-
+21.0
+Fold EV: -6.0 Check EV: 20.0 Raise EV: 21.0
+Received 'Player action: JavaBot raises to 6.'
+Received 'Chips: 42,4,8,6,40'
+playerBetAmount <- 10
+opponentBetAmount <- 8
+Received 'Player action: RandomBot raises to 8.'
+Received 'Chips: 38,8,8,6,40'
+playerBetAmount <- 10
+opponentBetAmount <- 12
+Received 'JavaBot, your move? (c)heck/call (2), bet/(r)aise (4), (f)old:'
+Type: PLAYER Round: FLOP Player Bet: 10 Opponent Bet: 12 knownCards: 5 History: CHECK-RAISE-CHECK-DEAL-RAISE-RAISE-RAISE-RAISE-
+24.0
+ERROR: already reached max raises for this round
+Fold EV: -10.0 Check EV: 24.0 Raise EV: 24.0
+Received 'Player action: JavaBot calls.'
+Received 'Chips: 38,8,8,8,38'
+playerBetAmount <- 12
+opponentBetAmount <- 12
+Received 'Chips: 38,0,24,0,38'
+playerBetAmount <- 12
+opponentBetAmount <- 12
+Received 'Dealing the turn'
+bettingRound <- TURN
+Received 'The 5 of Spades (5s) is dealt to the board.'
+knownCards <- Js4sJc7h9c5s
+Received 'JavaBot, your move? (c)heck/call (0), bet/(r)aise (4), (f)old:'
+Type: PLAYER Round: TURN Player Bet: 12 Opponent Bet: 12 knownCards: 6 History: CHECK-RAISE-CHECK-DEAL-RAISE-RAISE-RAISE-RAISE-CHECK-DEAL-
+24.0
+Fold EV: -12.0 Check EV: 21.0 Raise EV: 24.0
+Received 'Player action: JavaBot bets 4.'
+Received 'Chips: 38,0,24,4,34'
+playerBetAmount <- 16
+opponentBetAmount <- 12
+Received 'Player action: RandomBot raises to 8.'
+Received 'Chips: 30,8,24,4,34'
+playerBetAmount <- 16
+opponentBetAmount <- 20
+Received 'JavaBot, your move? (c)heck/call (4), bet/(r)aise (8), (f)old:'
+Type: PLAYER Round: TURN Player Bet: 16 Opponent Bet: 20 knownCards: 6 History: CHECK-RAISE-CHECK-DEAL-RAISE-RAISE-RAISE-RAISE-CHECK-DEAL-RAISE-RAISE-
+28.0
+Fold EV: -16.0 Check EV: 26.0 Raise EV: 28.0
+Received 'Player action: JavaBot raises to 12.'
+Received 'Chips: 30,8,24,12,26'
+playerBetAmount <- 24
+opponentBetAmount <- 20
+Received 'Player action: RandomBot calls.'
+Received 'Chips: 26,12,24,12,26'
+playerBetAmount <- 24
+opponentBetAmount <- 24
+Received 'Chips: 26,0,48,0,26'
+playerBetAmount <- 24
+opponentBetAmount <- 24
+Received 'Dealing the river'
+bettingRound <- RIVER
+Received 'The Ace of Spades (As) is dealt to the board.'
+knownCards <- Js4sJc7h9c5sAs
+Received 'JavaBot, your move? (c)heck/call (0), bet/(r)aise (4), (f)old:'
+Type: PLAYER Round: RIVER Player Bet: 24 Opponent Bet: 24 knownCards: 7 History: CHECK-RAISE-CHECK-DEAL-RAISE-RAISE-RAISE-RAISE-CHECK-DEAL-RAISE-RAISE-RAISE-CHECK-DEAL-
+30.0
+Fold EV: -24.0 Check EV: 27.0 Raise EV: 30.0
+Received 'Player action: JavaBot bets 4.'
+Received 'Chips: 26,0,48,4,22'
+playerBetAmount <- 28
+opponentBetAmount <- 24
+Received 'Player action: RandomBot raises to 8.'
+Received 'Chips: 18,8,48,4,22'
+playerBetAmount <- 28
+opponentBetAmount <- 32
+Received 'JavaBot, your move? (c)heck/call (4), bet/(r)aise (8), (f)old:'
+Type: PLAYER Round: RIVER Player Bet: 28 Opponent Bet: 32 knownCards: 7 History: CHECK-RAISE-CHECK-DEAL-RAISE-RAISE-RAISE-RAISE-CHECK-DEAL-RAISE-RAISE-RAISE-CHECK-DEAL-RAISE-RAISE-
+34.0
+Fold EV: -28.0 Check EV: 32.0 Raise EV: 34.0
+Received 'Player action: JavaBot raises to 12.'
+Received 'Chips: 18,8,48,12,14'
+playerBetAmount <- 36
+opponentBetAmount <- 32
+Received 'Player action: RandomBot calls.'
+Received 'Chips: 14,12,48,12,14'
+playerBetAmount <- 36
+opponentBetAmount <- 36
+Received 'Chips: 14,0,72,0,14'
+playerBetAmount <- 36
+opponentBetAmount <- 36
+Received 'Player RandomBot shows 4h 6c, giving them high card, Ace (As Jc 9c 7h 6c)'
+OpponentModel[11] <- 0 - 0 - 0 - 0 - 0 - 0 - 1 - 0 - 0 - 0 - Received 'Player JavaBot shows Js 4s, giving them a pair of Jacks (Js Jc As 9c 7h)'
+Received 'JavaBot wins 72 chips!'
+Received 'Chips: 14,0,0,0,86'
+playerBetAmount <- 0
+opponentBetAmount <- 0
+Received '-------'
+Received 'Hand No: 2'
+Resetting vars for new hand
+Received 'Dealer: RandomBot'
+dealer <- OPPONENT
+Received 'Small bet: 3'
+smallBetSize <- 3
+Received 'Chips: 14,0,0,0,86'
+playerBetAmount <- 0
+opponentBetAmount <- 0
+Received 'JavaBot is dealt the 4 of Diamonds and the King of Spades (4d,Ks).'
+playerHand <- FourOfDiamonds KingOfSpades
+Received 'RandomBot is the small blind, they post 1 chips.'
+Received 'Chips: 13,1,0,0,86'
+playerBetAmount <- 0
+opponentBetAmount <- 1
+Received 'JavaBot is the big blind, they post 3 chips.'
+Received 'Chips: 13,1,0,3,83'
+playerBetAmount <- 3
+opponentBetAmount <- 1
+Received 'Player action: RandomBot raises to 6.'
+Received 'Chips: 8,6,0,3,83'
+playerBetAmount <- 3
+opponentBetAmount <- 6
+Received 'JavaBot, your move? (c)heck/call (3), bet/(r)aise (6), (f)old:'
+Type: PLAYER Round: PREFLOP Player Bet: 3 Opponent Bet: 6 knownCards: 2 History: RAISE-
+Received 'Player action: JavaBot calls.'
+Received 'Chips: 8,6,0,6,80'
+playerBetAmount <- 6
+opponentBetAmount <- 6
+Received 'Chips: 8,0,12,0,80'
+playerBetAmount <- 6
+opponentBetAmount <- 6
+Received 'Dealing the flop'
+bettingRound <- FLOP
+Received 'The 2 of Diamonds (2d) is dealt to the board.'
+knownCards <- 4dKs2d
+Received 'The King of Diamonds (Kd) is dealt to the board.'
+knownCards <- 4dKs2dKd
+Received 'The 5 of Clubs (5c) is dealt to the board.'
+knownCards <- 4dKs2dKd5c
+Received 'Player action: RandomBot bets 3.'
+Received 'Chips: 5,3,12,0,80'
+playerBetAmount <- 6
+opponentBetAmount <- 9
+Received 'JavaBot, your move? (c)heck/call (3), bet/(r)aise (6), (f)old:'
+Type: PLAYER Round: FLOP Player Bet: 6 Opponent Bet: 9 knownCards: 5 History: RAISE-CHECK-DEAL-RAISE-
+28.5
+Fold EV: -6.0 Check EV: 27.0 Raise EV: 28.5
+Received 'Player action: JavaBot raises to 6.'
+Received 'Chips: 5,3,12,6,74'
+playerBetAmount <- 12
+opponentBetAmount <- 9
+Received 'Player action: RandomBot raises to 8.'
+Received 'Chips: 0,8,12,6,74'
+playerBetAmount <- 12
+opponentBetAmount <- 14
+Received 'RandomBot is all-in.'
+Received 'JavaBot, your move? (c)heck/call (2), bet/(r)aise (5), (f)old:'
+Type: PLAYER Round: FLOP Player Bet: 12 Opponent Bet: 14 knownCards: 5 History: RAISE-CHECK-DEAL-RAISE-RAISE-RAISE-
+33.0
+Fold EV: -12.0 Check EV: 32.0 Raise EV: 33.0
+Received 'Player action: JavaBot raises to 11.'
+Received '(As RandomBot is all-in, JavaBot reduces their bet to 8 chips)'
+Received 'Chips: 0,8,12,8,72'
+playerBetAmount <- 14
+opponentBetAmount <- 14
+Received 'Chips: 0,0,28,0,72'
+playerBetAmount <- 14
+opponentBetAmount <- 14
+Received 'Dealing the turn'
+bettingRound <- TURN
+Received 'The 7 of Clubs (7c) is dealt to the board.'
+knownCards <- 4dKs2dKd5c7c
+Received 'Dealing the river'
+bettingRound <- RIVER
+Received 'The 4 of Clubs (4c) is dealt to the board.'
+knownCards <- 4dKs2dKd5c7c4c
+Received 'Player JavaBot shows 4d Ks, giving them two pair, Kings and 4s (Ks Kd 4d 4c 7c)'
+Received 'Player RandomBot shows 9s 7d, giving them a pair of 7s (7d 7c Kd 9s 5c)'
+OpponentModel[5] <- 0 - 0 - 0 - 0 - 1 - 0 - 0 - 0 - 0 - 0 - Received 'JavaBot wins 28 chips!'
+Received 'Chips: 0,0,0,0,100'
+playerBetAmount <- 0
+opponentBetAmount <- 0
+Received 'RandomBot is out of chips. JavaBot is victorious!'
+Received 'SHUTDOWN'

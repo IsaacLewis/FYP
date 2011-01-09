@@ -10,6 +10,11 @@ class Card
     @card_id == card2.card_id
   end
 
+  def is_followed_by?(card2)
+    # takes into account that Ace (rank_index 12) can be followed by 2 (rank_index 0) 
+    @rank_index + 1 == card2.rank_index or (@rank_index == 12 and card2.rank_index == 0)
+  end
+  
   def initialize(rank, suit)
     fail unless Poker::Suits.include? suit and Poker::Ranks.include? rank
     @suit_index = Poker::Suits.index(suit)

@@ -3,14 +3,15 @@
 ** implement Miximix
 *** EV function
 **** opponent modelling
+***** change OpponentModel class to interface
 ***** read data
 ***** output probabilities
 **** showdown EV
 ***** find out how to calculate win %
-**  rig up to AI
-*** Generate state from current input and find EV of children
+
 ** preflop strategy
 *** experiment with using Miximix (time requirements may be high/performance poor)
+
 ** think about data requirement, where to obtain
 
 * web_client
@@ -21,6 +22,7 @@
 
 * misc
 ** automated startup script for testing
-** error handling for broken pipes
+
+* server
 
 

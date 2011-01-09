@@ -9,6 +9,8 @@ class RankedHand
 
   def initialize(cards)
     
+	fail if cards.size < 5
+	
     # if more than 5 cards, selects the subset of size 5
     # with the highest ranking
     if cards.size > 5
@@ -18,7 +20,7 @@ class RankedHand
       @rank = @best_hand.rank
       return
     end
-
+	
     # if there's only 5 cards, by definition this is the
     # best possible set of 5 cards
 
@@ -79,8 +81,20 @@ class RankedHand
 
   def is_straight?(cards)
     return @straight unless @straight.nil?
-    @straight = cards.sort.each_cons(2).all? do |card1, card2|
-      card1.rank_index + 1 == card2.rank_index
+    cards = cards.sort
+    @straight = cards.each_cons(2).all? do |card1, card2|
+      card1.is_followed_by? card2
+    end
+    
+    # check for wheels (straights of form A2345)
+    if @straight == false and 
+    	cards[0].rank_index == 0 and  
+    	cards[1].rank_index == 1 and 
+    	cards[2].rank_index == 2 and 
+    	cards[3].rank_index == 3 and 
+    	cards[4].rank_index == 12
+    	
+      @straight = true 
     end
     return @straight
   end

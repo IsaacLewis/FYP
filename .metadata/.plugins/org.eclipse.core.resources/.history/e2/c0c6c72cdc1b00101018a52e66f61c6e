@@ -1,0 +1,13 @@
+package me.saac.i;
+
+import java.util.ArrayList;
+
+import me.saac.i.GameState.Action;
+
+public interface OpponentModel {
+	public double winProbability(ArrayList<Action> history, int playerHandStrength);
+	
+	public double[] actionProbailities(ArrayList<Action> history);
+	
+	public void input(ArrayList<Action> history, int handStrength);
+}

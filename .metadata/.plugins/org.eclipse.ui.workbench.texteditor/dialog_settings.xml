@@ -2,19 +2,21 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="314" key="DIALOG_WIDTH"/>
-		<item value="198" key="DIALOG_Y_ORIGIN"/>
-		<item value="257" key="DIALOG_X_ORIGIN"/>
+		<item value="355" key="DIALOG_Y_ORIGIN"/>
 		<item value="424" key="DIALOG_HEIGHT"/>
+		<item value="0" key="DIALOG_X_ORIGIN"/>
 		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="wrap"/>
-		<item value="false" key="casesensitive"/>
 		<item value="false" key="isRegEx"/>
+		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="org.pokersource.enumerator" key="selection"/>
+		<item value="Print" key="selection"/>
 		<list key="findhistory">
+			<item value="print"/>
+			<item value="processControlBlocks"/>
 			<item value="org.pokersource.enum"/>
 			<item value="org.pokesource.enum"/>
 			<item value="opponentBetAmount"/>

@@ -36,7 +36,7 @@ public class Client {
     static int opponentBetAmount;
     static int smallBetSize;
     static int playerNo;
-    static OpponentModel opponentModel = new OpponentModel();
+    static OpponentModel opponentModel = new BasicOpponentModel();
     
     public static void main(String[] args) throws Exception {
 	playerNo = Integer.parseInt(args[0].trim());
@@ -164,7 +164,7 @@ public class Client {
 
     static char getAction(String str) {
     	char result = 'x';
-    	gameInfo = new GameInfo(smallBetSize, dealer);
+    	gameInfo = new GameInfo(smallBetSize, dealer, opponentModel);
     	GameState currentState = new GameState(NodeType.PLAYER, bettingRound, playerBetAmount, 
     		opponentBetAmount, knownCards, actionHistory, gameInfo);
     	System.out.println(currentState.print());

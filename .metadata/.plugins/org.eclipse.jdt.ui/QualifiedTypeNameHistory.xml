@@ -2,10 +2,13 @@
 <qualifiedTypeNameHistroy>
 <fullyQualifiedTypeName name="GameState.NodeType"/>
 <fullyQualifiedTypeName name="me.saac.i.GameState.BettingRound"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
-<fullyQualifiedTypeName name="me.saac.i.GameState.Action"/>
 <fullyQualifiedTypeName name="me.saac.i.GameState.NodeType"/>
 <fullyQualifiedTypeName name="me.saac.i.GameInfo.Dealer"/>
-<fullyQualifiedTypeName name="pokerai.game.eval.spears.SevenCardEvaluator"/>
 <fullyQualifiedTypeName name="pokerai.game.eval.spears.Card"/>
+<fullyQualifiedTypeName name="me.saac.i.GameState.Action"/>
+<fullyQualifiedTypeName name="java.util.Hashtable"/>
+<fullyQualifiedTypeName name="pokerai.game.eval.spears.FiveCardEvaluator"/>
+<fullyQualifiedTypeName name="pokerai.game.eval.spears.SevenCardEvaluator"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="pokerai.game.eval.spears.SixCardEvaluator"/>
 </qualifiedTypeNameHistroy>

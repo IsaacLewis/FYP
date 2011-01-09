@@ -52,12 +52,9 @@ class GameState {
     	double ev_raise;
     	switch(nodeType) {
     	case SHOWDOWN :
-    		if(knownCards.getCount() == 7) {
-    			ev = knownCards.evaluate();
-    			// System.out.println("EV: " + ev + " " + print());
-    		} else {
-    			ev = opponentBetAmount;
-    		}
+    		double winPossibility = gameInfo.opponentModel.winPossibility(actionHistory, knownCards.evaluate());
+    		ev = winPossibility * opponentBetAmount - ((1 - winPossibility) * playerBetAmount);
+    		// System.out.println("Win%: " + winPossibility + " BetAmt: " + opponentBetAmount + " ev: " + ev);
     		break;
     		
     	case CHANCE :
@@ -80,13 +77,14 @@ class GameState {
     		ev_check = successor(Action.CHECK).EV();
     		
     		if(reachedMaxRaises()) {
-    			ev = 0.5 * ev_fold + 0.5 * ev_check;
+    			ev = ev_check;
     		} else {
     			ev_raise = successor(Action.RAISE).EV();
-    			ev = 0.33 * ev_fold + 0.33 * ev_check + 0.34 * ev_raise;
+    			ev = 0.5 * ev_check + 0.5 * ev_raise;
     		}
     		break;
     	}
+
     	return ev;
     }
     
