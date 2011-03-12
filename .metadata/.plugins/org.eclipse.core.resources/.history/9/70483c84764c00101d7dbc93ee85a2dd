@@ -35,17 +35,11 @@ public class Player {
     int opponentBetAmount;
     int smallBetSize;
     int playerNo;
-    OpponentModel opponentModel;
     
-    Player(boolean useImprovedOpponentModel) {
-    	if(useImprovedOpponentModel) {
-    		System.out.println("using improved");
-    		opponentModel = new ImprovedOpponentModel();
-    	} else {
-    		opponentModel = new BasicOpponentModel();
-    	}
+    Player() {
+    	
     }
-    
+    static OpponentModel opponentModel = new BasicOpponentModel();
     
     // process the input, updating state as appropriate
     void receive(String str) {

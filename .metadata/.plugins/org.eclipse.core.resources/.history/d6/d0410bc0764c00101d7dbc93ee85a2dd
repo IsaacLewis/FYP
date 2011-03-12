@@ -18,7 +18,6 @@ public class Client {
     static int playerNo;
     static String name = "TeaBot";
     static Player player;
-    static boolean useImprovedOpponentModel;
     
     public static void main(String[] args) throws Exception {
 
@@ -36,8 +35,7 @@ public class Client {
 	out.print("My name is " + name);
 	out.flush();
 
-	useImprovedOpponentModel = args.length > 1 && "--improved".matches(args[1]);
-	player = new Player(useImprovedOpponentModel);
+	player = new Player();
 	char[] cbuf = new char[inputLength];
 	String input;
 

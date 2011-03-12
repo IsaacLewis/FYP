@@ -36,7 +36,7 @@ public class Client {
 	out.print("My name is " + name);
 	out.flush();
 
-	useImprovedOpponentModel = args.length > 1 && "--improved".matches(args[1]);
+	useImprovedOpponentModel = "--improved".matches(args[1]);
 	player = new Player(useImprovedOpponentModel);
 	char[] cbuf = new char[inputLength];
 	String input;

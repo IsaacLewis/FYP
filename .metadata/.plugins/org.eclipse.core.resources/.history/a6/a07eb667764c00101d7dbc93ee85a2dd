@@ -25,27 +25,17 @@ public class Player {
     
     // variables to keep track of game state
     // TODO: consider making these non-static and creating an instance of Client?
-    String name = "JavaBot";
-    BettingRound bettingRound;
-    ArrayList<Action> actionHistory;
-    CardArray knownCards;
-    GameInfo gameInfo;
-    Dealer dealer;
-    int playerBetAmount;
-    int opponentBetAmount;
-    int smallBetSize;
-    int playerNo;
-    OpponentModel opponentModel;
-    
-    Player(boolean useImprovedOpponentModel) {
-    	if(useImprovedOpponentModel) {
-    		System.out.println("using improved");
-    		opponentModel = new ImprovedOpponentModel();
-    	} else {
-    		opponentModel = new BasicOpponentModel();
-    	}
-    }
-    
+    static String name = "JavaBot";
+    static BettingRound bettingRound;
+    static ArrayList<Action> actionHistory;
+    static CardArray knownCards;
+    static GameInfo gameInfo;
+    static Dealer dealer;
+    static int playerBetAmount;
+    static int opponentBetAmount;
+    static int smallBetSize;
+    static int playerNo;
+    static OpponentModel opponentModel = new BasicOpponentModel();
     
     // process the input, updating state as appropriate
     void receive(String str) {

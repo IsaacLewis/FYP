@@ -38,12 +38,11 @@ public class Player {
     OpponentModel opponentModel;
     
     Player(boolean useImprovedOpponentModel) {
-    	if(useImprovedOpponentModel) {
+    	if(useImprovedOpponentModel)
     		System.out.println("using improved");
     		opponentModel = new ImprovedOpponentModel();
-    	} else {
+    	else
     		opponentModel = new BasicOpponentModel();
-    	}
     }
     
     
