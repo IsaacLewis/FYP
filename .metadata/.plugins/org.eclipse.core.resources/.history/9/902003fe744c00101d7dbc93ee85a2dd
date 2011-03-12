@@ -148,27 +148,22 @@ public class Player {
     		double ev_check = currentState.successor(Action.CHECK).EV();
     		System.out.println("Check EV: " + ev_check);
     		
-    		// if we've already reached the max allowed raises,
-    		// don't check for any more
     		if(currentState.reachedMaxRaises()) {
-    			if(ev_fold > ev_check) result = 'f';
-    			else result = 'c';
     			
     		} else {
     			double ev_raise = currentState.successor(Action.RAISE).EV();
     			System.out.println("Raise EV: " + ev_raise);
-    			
-        		if(ev_fold > ev_raise) { 
-        			if(ev_fold > ev_check) result = 'f';
-        			else result = 'c';
-        		} else {
-        			if(ev_raise > ev_check) result = 'r';
-        			else result = 'c';
-        		}
     		}
     		
 
-
+		// return max EV action
+    		if(ev_fold > ev_raise) { 
+    			if(ev_fold > ev_check) result = 'f';
+    			else result = 'c';
+    		} else {
+    			if(ev_raise > ev_check) result = 'r';
+    			else result = 'c';
+    		}
     	} else {
 	    // if it's preflop, just check/call
 	    // TODO: implement proper preflop strategy

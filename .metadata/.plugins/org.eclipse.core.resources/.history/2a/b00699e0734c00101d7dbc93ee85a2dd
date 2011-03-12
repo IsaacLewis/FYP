@@ -241,7 +241,7 @@ class GameState {
     		(actionHistory.get(size - 1) != Action.DEAL);
     }
     
-    boolean reachedMaxRaises() {
+    private boolean reachedMaxRaises() {
 	// return true if number of raise actions in history is greater than maxNumberOfRaises
     	int historySize = actionHistory.size();
     	if(historySize < maxNumberOfRaises)

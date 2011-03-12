@@ -99,8 +99,7 @@ class GameState {
     }
     
     // return a new state that is the succesor of this one if "action" is taken
-    @SuppressWarnings("unchecked")
-	public GameState successor(Action action) {
+    public GameState successor(Action action) {
     	GameState successor = this;
     	ArrayList<Action> newActionHistory = (ArrayList<Action>) this.actionHistory.clone();
     	switch(nodeType) {
@@ -241,7 +240,7 @@ class GameState {
     		(actionHistory.get(size - 1) != Action.DEAL);
     }
     
-    boolean reachedMaxRaises() {
+    private boolean reachedMaxRaises() {
 	// return true if number of raise actions in history is greater than maxNumberOfRaises
     	int historySize = actionHistory.size();
     	if(historySize < maxNumberOfRaises)

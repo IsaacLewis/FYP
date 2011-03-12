@@ -1,0 +1,10 @@
+package me.saac.i.ai;
+
+public class MaxRaisesReachedException extends Exception {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8088914561028077377L;
+
+}

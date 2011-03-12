@@ -140,35 +140,20 @@ public class Player {
 
     	if(bettingRound != BettingRound.PREFLOP) {
     		System.out.println(currentState.EV());
-    		
-    		// calculate ev for fold / check / raise
+		// calculate ev for fold / check / raise
     		double ev_fold = -playerBetAmount;
-    		System.out.println("Fold EV: " + ev_fold);
-    		
     		double ev_check = currentState.successor(Action.CHECK).EV();
-    		System.out.println("Check EV: " + ev_check);
-    		
-    		// if we've already reached the max allowed raises,
-    		// don't check for any more
-    		if(currentState.reachedMaxRaises()) {
+    		double ev_raise = currentState.successor(Action.RAISE).EV();
+    		System.out.println("Fold EV: " + ev_fold + " Check EV: " + ev_check + " Raise EV: " + ev_raise);
+
+		// return max EV action
+    		if(ev_fold > ev_raise) { 
     			if(ev_fold > ev_check) result = 'f';
     			else result = 'c';
-    			
     		} else {
-    			double ev_raise = currentState.successor(Action.RAISE).EV();
-    			System.out.println("Raise EV: " + ev_raise);
-    			
-        		if(ev_fold > ev_raise) { 
-        			if(ev_fold > ev_check) result = 'f';
-        			else result = 'c';
-        		} else {
-        			if(ev_raise > ev_check) result = 'r';
-        			else result = 'c';
-        		}
+    			if(ev_raise > ev_check) result = 'r';
+    			else result = 'c';
     		}
-    		
-
-
     	} else {
 	    // if it's preflop, just check/call
 	    // TODO: implement proper preflop strategy

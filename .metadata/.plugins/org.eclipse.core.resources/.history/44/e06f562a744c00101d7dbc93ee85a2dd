@@ -137,6 +137,7 @@ class GameState {
     			// successor of a player node when raising is an opponent node,
     			// with playerBetAmount increased appropriately
     			if(reachedMaxRaises())
+    				throws Exception();
     				System.out.println("ERROR: already reached max raises for this round");
     			int newPlayerBetAmount = playerBetAmount;
     			if(bettingRound == BettingRound.FLOP)
@@ -241,7 +242,7 @@ class GameState {
     		(actionHistory.get(size - 1) != Action.DEAL);
     }
     
-    boolean reachedMaxRaises() {
+    private boolean reachedMaxRaises() {
 	// return true if number of raise actions in history is greater than maxNumberOfRaises
     	int historySize = actionHistory.size();
     	if(historySize < maxNumberOfRaises)
