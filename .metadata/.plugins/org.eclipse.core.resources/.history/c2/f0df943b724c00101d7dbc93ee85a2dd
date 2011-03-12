@@ -1,0 +1,36 @@
+package me.saac.i.ai;
+
+import java.util.ArrayList;
+import java.util.regex.Pattern;
+
+import me.saac.i.ai.GameInfo.Dealer;
+import me.saac.i.ai.GameState.Action;
+import me.saac.i.ai.GameState.BettingRound;
+
+public class Player {
+    // patterns for matching input from the server
+    static Pattern newHandMsg = Pattern.compile("Hand No: ");
+    static Pattern inputPrompt = Pattern.compile("your move?");
+    static Pattern betSizeMsg = Pattern.compile("Small bet: ([0-9]+)");
+    static Pattern dealerMsg = Pattern.compile("Dealer: ([A-z0-9]+)");
+    static Pattern bettingRoundMsg = Pattern.compile("Dealing the ([A-z]+)");
+    static Pattern chipDistributionMsg = Pattern.compile("Chips: [0-9]+,([0-9]+),([0-9]+),([0-9]+),[0-9]+");
+    static Pattern playerActionMsg = Pattern.compile("Player action: [A-z0-9]+ ([A-z]+)");
+    static Pattern playerHandMsg = Pattern.compile("is dealt [A-z0-9 ]+ \\((..),(..)\\)");
+    static Pattern boardCardMsg = Pattern.compile("\\((..)\\) is dealt to the board");
+    static Pattern showdownMsg = Pattern.compile("Player ([A-z0-9]+) shows (..) (..)");
+    
+    // variables to keep track of game state
+    // TODO: consider making these non-static and creating an instance of Client?
+    static String name = "JavaBot";
+    static BettingRound bettingRound;
+    static ArrayList<Action> actionHistory;
+    static CardArray knownCards;
+    static GameInfo gameInfo;
+    static Dealer dealer;
+    static int playerBetAmount;
+    static int opponentBetAmount;
+    static int smallBetSize;
+    static int playerNo;
+    static OpponentModel opponentModel = new BasicOpponentModel();
+}

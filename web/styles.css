@@ -1,0 +1,101 @@
+.card {
+background-color: #ffe;
+width: 50px;
+height: 80px;
+display: inline;
+font-size: 36px;
+padding: 14px 7px 14px 7px;
+margin: 2px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+}
+
+.chips {
+font-size: 18px;
+display:inline;
+padding: 2px 12px 2px 12px;
+-moz-border-radius: 15px / 5px;
+border-radius: 15px / 5px;
+}
+
+.micro {
+background-color: #151;
+color: #eee;
+border: 4px outset #151;
+}
+
+.small {
+background-color: #b22;
+color: #111;
+border: 4px outset #b22;
+}
+
+.medium {
+background-color: #229;
+color: #ffe;
+border: 4px outset #229;
+}
+
+.big {
+background-color: #181818;
+color: #994;
+border: 4px outset #181818;
+}
+
+.action_form {
+display: inline;
+}
+
+.action_button {
+display: inline;
+background: #9c9;
+border: 3px outset #9c9;
+-moz-border-radius: 10px / 10px;
+border-radius: 10px / 10px;
+}
+
+.card-container {
+height: 100px;
+vertical-align: center;
+text-align: center;
+}
+
+.name_container {
+height: 80px;
+font-size: 24px;
+}
+
+#board-box {
+background-color: #474;
+padding: 30px;
+width: 400px;
+position: absolute;
+top: 50px;
+-moz-border-radius: 10px / 10px;
+border-radius: 10px / 10px;
+}
+
+
+#info-box {
+background-color: #585;
+position: absolute;
+left: 480px;
+top: 50px;
+width: 400px;
+padding: 5px;
+-moz-border-radius: 10px / 10px;
+border-radius: 10px / 10px;
+}
+
+body, p, ol, ul, td {
+background-color: #669966;
+font-family: verdana, arial, helvetica, sans-serif;
+font-size:   13px;
+line-height: 18px;
+}
+
+body { 
+background-color: #669966; 
+color: #282828; 
+}
+

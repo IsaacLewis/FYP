@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename package &apos;me.saac.i&apos; to &apos;me.saac.i.ai&apos;&#x0A;- Original project: &apos;ai&apos;&#x0A;- Original element: &apos;ai/me.saac.i&apos;&#x0A;- Renamed element: &apos;ai/me.saac.i.ai&apos;&#x0A;- Update references to refactored element&#x0A;- Update textual occurrences in comments and strings&#x0A;- Rename subpackages of the package" description="Rename package &apos;me.saac.i&apos;" flags="589830" hierarchical="true" id="org.eclipse.jdt.ui.rename.package" input="/&lt;me.saac.i" name="me.saac.i.ai" qualified="false" references="true" stamp="1299911043656" textual="false" version="1.0"/>
+</session>

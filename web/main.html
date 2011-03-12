@@ -1,0 +1,46 @@
+<html>
+<head>
+<title>Isaac's Fantabulous Automagical Poker Player</title>
+<link rel="stylesheet" type="text/css" href="styles.css" />
+<script type="text/javascript">
+function loadInfo() {
+  xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange=function() {
+    if(xmlhttp.readyState==4 && xmlhttp.status==200) {
+      document.getElementById("info-box").innerHTML=xmlhttp.responseText;
+    }
+  };
+  xmlhttp.open("GET","/info.txt",true);
+  xmlhttp.send(null);
+}
+
+function loadBoard() {
+  xmlhttp2 = new XMLHttpRequest();
+  xmlhttp2.onreadystatechange=function() {
+    if(xmlhttp2.readyState==4 && xmlhttp2.status==200) {
+      document.getElementById("board-box").innerHTML=xmlhttp2.responseText;
+    }
+  };
+  xmlhttp2.open("GET","/board.txt",true);
+  xmlhttp2.send(null);
+}
+
+function refresher() {
+  loadInfo();
+  loadBoard();
+  setTimeout("refresher()",SLEEP_TIME);
+}
+
+refresher();
+</script>
+</head>
+
+<body>
+<h1>Poker Casino</h1>
+<div id="board-box">
+</div>
+
+<div id="info-box">
+</div>
+</body>
+</html>

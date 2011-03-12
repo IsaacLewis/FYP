@@ -1,0 +1,17 @@
+package me.saac.i.ai;
+
+// class to hold game info that doesn't change during a hand
+// ie, doesn't need to be changed when we search through state space
+public class GameInfo {
+	public enum Dealer { PLAYER, OPPONENT };
+	
+	public int smallBetSize;
+	public Dealer dealer;
+	public OpponentModel opponentModel;
+	
+	public GameInfo(int sbs, Dealer d, OpponentModel om) {
+		smallBetSize = sbs;
+		dealer = d;
+		opponentModel = om;
+	}
+}

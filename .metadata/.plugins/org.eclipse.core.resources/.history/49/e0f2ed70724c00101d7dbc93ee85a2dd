@@ -1,0 +1,125 @@
+package me.saac.i.ai;
+
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import pokerai.game.eval.spears.Card;
+
+import me.saac.i.ai.GameInfo.Dealer;
+import me.saac.i.ai.GameState.Action;
+import me.saac.i.ai.GameState.BettingRound;
+
+public class Player {
+    // patterns for matching input from the server
+    static Pattern newHandMsg = Pattern.compile("Hand No: ");
+    static Pattern betSizeMsg = Pattern.compile("Small bet: ([0-9]+)");
+    static Pattern dealerMsg = Pattern.compile("Dealer: ([A-z0-9]+)");
+    static Pattern bettingRoundMsg = Pattern.compile("Dealing the ([A-z]+)");
+    static Pattern chipDistributionMsg = Pattern.compile("Chips: [0-9]+,([0-9]+),([0-9]+),([0-9]+),[0-9]+");
+    static Pattern playerActionMsg = Pattern.compile("Player action: [A-z0-9]+ ([A-z]+)");
+    static Pattern playerHandMsg = Pattern.compile("is dealt [A-z0-9 ]+ \\((..),(..)\\)");
+    static Pattern boardCardMsg = Pattern.compile("\\((..)\\) is dealt to the board");
+    static Pattern showdownMsg = Pattern.compile("Player ([A-z0-9]+) shows (..) (..)");
+    
+    // variables to keep track of game state
+    // TODO: consider making these non-static and creating an instance of Client?
+    static String name = "JavaBot";
+    static BettingRound bettingRound;
+    static ArrayList<Action> actionHistory;
+    static CardArray knownCards;
+    static GameInfo gameInfo;
+    static Dealer dealer;
+    static int playerBetAmount;
+    static int opponentBetAmount;
+    static int smallBetSize;
+    static int playerNo;
+    static OpponentModel opponentModel = new BasicOpponentModel();
+    
+    void receive(String str) {
+    	System.out.println("Received '" + str + "'");
+    	
+    	// try to match the input against the different regexs
+    	Matcher betSizeMatcher = betSizeMsg.matcher(str);
+    	Matcher dealerMatcher = dealerMsg.matcher(str);
+    	Matcher bettingRoundMatcher = bettingRoundMsg.matcher(str);
+    	Matcher chipDistributionMatcher = chipDistributionMsg.matcher(str); 
+    	Matcher playerActionMatcher = playerActionMsg.matcher(str);
+    	Matcher playerHandMatcher = playerHandMsg.matcher(str);
+    	Matcher boardCardMatcher = boardCardMsg.matcher(str);
+    	Matcher showdownMatcher = showdownMsg.matcher(str);
+    	
+    	// update state as appropriate depending on input
+
+    	if(str.substring(0,7).equals("Hand No")) {
+    		resetStateVariables();
+    		System.out.println("Resetting vars for new hand");
+    		
+    	} else if(betSizeMatcher.find()) {
+    		smallBetSize = Integer.parseInt(betSizeMatcher.group(1));
+    		System.out.println("smallBetSize <- " + smallBetSize);
+    		
+    	} else if(dealerMatcher.find()) {
+    		if(dealerMatcher.group(1).matches(name)) {
+    			dealer = Dealer.PLAYER;
+    		} else {
+    			dealer = Dealer.OPPONENT;
+    		}
+    		System.out.println("dealer <- " + dealer);
+    		
+    	} else if(bettingRoundMatcher.find()) {
+    		bettingRound = BettingRound.valueOf(bettingRoundMatcher.group(1).toUpperCase());
+    		System.out.println("bettingRound <- " + bettingRound);
+    		actionHistory.add(Action.DEAL);
+    		
+    	} else if(chipDistributionMatcher.find()) {
+    		int player1bet = Integer.parseInt(chipDistributionMatcher.group(1));
+    		int potSize = Integer.parseInt(chipDistributionMatcher.group(2));
+    		int player2bet = Integer.parseInt(chipDistributionMatcher.group(3));
+    		
+    		// each player contributed half the pot amount, so add this to their current bet to
+    		// find their total contribution for this hand
+    		if(playerNo == 1) {
+    			playerBetAmount = player1bet + (int) (potSize * 0.5);
+    			opponentBetAmount = player2bet + (int) (potSize * 0.5);
+    		} else {
+    			playerBetAmount = player2bet + (int) (potSize * 0.5);
+    			opponentBetAmount = player1bet + (int) (potSize * 0.5);
+    		}
+    		System.out.println("playerBetAmount <- " + playerBetAmount);
+    		System.out.println("opponentBetAmount <- " + opponentBetAmount);
+    		
+    	} else if(playerActionMatcher.find()) {
+    		String action = playerActionMatcher.group(1);
+    		if(action.equals("calls") || action.equals("checks")) {
+    			actionHistory.add(Action.CHECK);
+    		} else if(action.equals("bets") || action.equals("raises")) {
+    			actionHistory.add(Action.RAISE);
+    		} else {
+    			actionHistory.add(Action.FOLD);
+    		}
+    	
+    	} else if(playerHandMatcher.find()) {
+    		knownCards.add(Card.parse(playerHandMatcher.group(1)));
+    		knownCards.add(Card.parse(playerHandMatcher.group(2)));
+    		System.out.println("playerHand <- " + knownCards.cards[0].name() + " " + knownCards.cards[1].name());
+    		
+    	} else if(boardCardMatcher.find()) {
+    		knownCards.add(Card.parse(boardCardMatcher.group(1)));
+    		System.out.print("knownCards <- ");
+    		for(int i = 0; i < knownCards.count; i++) {
+    			System.out.print(knownCards.cards[i].toString());
+    		}
+    		System.out.println();
+    		
+    	} else if(showdownMatcher.find()) {
+    		if(!showdownMatcher.group(1).equals(name)) {
+    			CardArray opponentCards = knownCards.subset(2, 7);
+    			opponentCards.add(Card.parse(showdownMatcher.group(2)));
+    			opponentCards.add(Card.parse(showdownMatcher.group(3)));
+    			
+    			opponentModel.input(actionHistory, opponentCards.evaluate());
+    		}
+    	}
+       }
+}

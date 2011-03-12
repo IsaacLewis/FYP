@@ -1,0 +1,93 @@
+package me.saac.i;
+
+import me.saac.i.ai.GameState.Action;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class BasicOpponentModel implements OpponentModel {
+
+    // Hash Map which maps (number of raises) to an int array
+    // representing the histogram for that number of raises
+
+	private HashMap<Integer, int[]> historyToHandStrength = new HashMap<Integer, int[]>();
+
+    // takes current history and player hand strength and calculates win probability
+	public double winPossibility(ArrayList<Action> history, int playerHandStrength) {
+
+	        // find number of raise actions in history
+		int numRaises = 0;
+		for(Action a : history) {
+			if(a == Action.RAISE) {
+				numRaises++;
+			}
+		}
+		
+		// find histogram and adjusted hand strength
+		int[] histogram = historyToHandStrength.get(numRaises);
+		int aphs = adjustedHandStrength(playerHandStrength);
+		
+		// if there is no observed history for this number of raises,
+		// return a default probability based on adjusted hand strength
+		if(histogram == null)
+			return 1 - (aphs / 8);
+		
+		
+		// calculate win% = hands player can defeat / total hands
+		int handsPlayerWins = 0;
+		int handsOpponentWins = 0;
+		int i;
+		for(i = 0; i < aphs; i++) {
+			handsOpponentWins += histogram[i];
+		}
+		for(; i < histogram.length; i++) {
+			handsPlayerWins += histogram[i];
+		}
+		
+		return (double) handsPlayerWins / (handsPlayerWins + handsOpponentWins);
+	}
+	
+    // when a hand is finished, update the opponent model with the data from the hand
+	public void input(ArrayList<Action> history, int handStrength) {
+	        // calculate number of raise actions in history
+		int numRaises = 0;
+		for(Action a : history) {
+			if(a == Action.RAISE) {
+				numRaises++;
+			}
+		}
+		
+		// calculate adjusted hand strength
+		int ahs = adjustedHandStrength(handStrength);
+
+		// if there is no history, initialize an empty int array
+		if(historyToHandStrength.get(numRaises) == null) {
+			int[] histogram = new int[] {0,0,0,0,0,0,0,0,0,0};
+			historyToHandStrength.put(numRaises, histogram);
+		}
+
+		// find existing histogram and increment appropriate slot
+		int[] histogram = historyToHandStrength.get(numRaises);
+		histogram[ahs] = histogram[ahs] + 1;
+		
+		System.out.print("OpponentModel["+numRaises+"] <- ");
+		for(int i = 0; i < histogram.length; i++) {
+			System.out.print(histogram[i] + " - ");
+		}
+	}
+	
+
+	private int adjustedHandStrength(int rawHandStrength) {
+		int ahs = rawHandStrength / 1000;
+		return Math.min(ahs, 9);
+	}
+
+    // takes history and returns an array of opponent probabilities
+    // for {fold, call, raise}.
+    // TODO: implement
+	public double[] actionProbabilities(ArrayList<Action> history) {
+		return new double[] {0, 0.5, 0.5};
+	}
+
+
+}

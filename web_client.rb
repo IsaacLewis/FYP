@@ -4,7 +4,7 @@ require 'card.rb'
 
 class WebClient < Client
   @@port = 2020
-  @@sleep_time = 0.5
+  @@sleep_time = 0.8
 
   def initialize(player_no)
     @received_msgs = []
@@ -69,54 +69,74 @@ class WebClient < Client
   def start_web_server
     @web_server = TCPServer.new 'localhost', @@port
     while true 
-      session = @web_server.accept
-      headers = session.recvfrom(1024)[0]
-      uri = headers.match(/[(POST)|(GET)] (\/[a-z.]*)/)[1]
-      session.print "HTTP/1.1 200/OK\r\nContent-type: text/html\r\n\r\n"
-
-      case uri
-      when "/info.txt"
-        session.print info_box
-      when "/board.txt"
-        session.print board_box
-      when "/styles.css"
-        session.print stylesheet
-      else
-        if @take_input and headers =~ /action=([a-z]*)/
-          puts $1
-          $input = $1.slice 0,1
-        end
-
-        if @name.nil?
-          if headers =~ /name=([A-z0-9]*)/
-            @name = $1
-            session.print main_page
-          else
-            session.print input_name_page
-          end
-        else
-          session.print main_page
-        end
+      begin
+        session = @web_server.accept
+        process_request session
+      rescue Exception => e
+        puts e
       end
-      session.close
     end
+  end
+
+  def http_header(type)
+    "HTTP/1.1 200/OK\r\nContent-type: #{type}\r\n\r\n"
+  end
+
+  def process_request(session)
+    headers = session.recvfrom(1024)[0]
+    uri = headers.match(/[(POST)|(GET)] (\/[a-z.]*)/)[1]
+    
+    case uri
+    when "/info.txt"
+      session.print http_header "text/html"
+      session.print info_box
+    when "/board.txt"
+      session.print http_header "text/html"
+      session.print board_box
+    when "/styles.css"
+      session.print http_header "text/css"
+      session.print stylesheet
+    else
+
+      if @take_input and headers =~ /action=([a-z]*)/
+        puts $1
+        $input = $1.slice 0,1
+      end
+      
+      session.print http_header "text/html"
+      if @name.nil?
+        if headers =~ /name=([A-z0-9]*)/
+          @name = $1
+          session.print main_page
+        else
+          session.print input_name_page
+        end
+      else
+        session.print main_page
+      end
+    end
+    session.close
   end
 
   private
 
   def form_button(title, cost=0)
     <<HTML
-<form method='POST' action='/'>
+<form method='POST' action='/' class="action_form">
   <input type='hidden' name='action' value='#{title}' />
-  <input type='submit' value='#{title.capitalize}#{" (#{cost} chips)" unless cost == 0}' />
+  <input class="action_button" type='submit' value='#{title.capitalize}#{" (#{cost} chips)" unless cost == 0}' />
 </form>
 HTML
   end
 
   def info_box
-    html = @received_msgs.last(25).join "\n<br>\n"
+    html = @received_msgs.select do |msg| 
+      msg !~ /Chips:/ and msg !~ /your move/
+    end.last(25).join "\n<br>\n"
+
     if @take_input
-      html += form_button(@call_cost == 0 ? "check" : "call", @call_cost) + 
+      html += "<br><br/><br><b>#{@name}, your move?<b><br/>" +
+        form_button(@call_cost == 0 ? "check" : "call", @call_cost) + 
         form_button((@player_bet == 0 and @opponent_bet == 0) ? "bet" : "raise", @raise_cost) + 
         form_button("fold")
     end
@@ -129,7 +149,12 @@ HTML
     else
       color = "111"
     end
-    "<div class=\"card\" style=\"color:##{color}\">#{card}</div>"
+
+    display = card.sub(/[h|s|c|d]/) do |suit| 
+      {"h"=>"&hearts;","c"=>"&clubs;","d"=>"&diams;","s"=>"&spades;"}[suit]
+    end
+
+    "<div class=\"card\" style=\"color:##{color}\">#{display}</div>"
   end
 
   def chips_html(amt)
@@ -148,7 +173,7 @@ HTML
   end
 
   def stylesheet
-    File.read "styles.css"
+    File.read "web/styles.css"
   end
 
   def board_box
@@ -180,73 +205,10 @@ HTML
   end
 
   def input_name_page
-    <<HTML
-<html>
-<head>
-<title>Isaac's Fantabulous Automagical Poker Player - Input Name</title>
-<link rel="stylesheet" type="text/css" href="styles.css" />
-</head>
-
-<body>
-Enter your name: 
-<form method='post' action='/'>
-  <input type='text' name='name' />
-  <input type='submit' value='Play!' />
-</form>
-
-</body>
-</html>
-HTML
+    File.read "web/input_name.html"
   end
 
   def main_page
-    <<HTML
-<html>
-<head>
-<title>Isaac's Fantabulous Automagical Poker Player</title>
-<link rel="stylesheet" type="text/css" href="styles.css" />
-<script type="text/javascript">
-function loadInfo() {
-  xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange=function() {
-    if(xmlhttp.readyState==4 && xmlhttp.status==200) {
-      document.getElementById("info-box").innerHTML=xmlhttp.responseText;
-    }
-  };
-  xmlhttp.open("GET","/info.txt",true);
-  xmlhttp.send(null);
-}
-
-function loadBoard() {
-  xmlhttp2 = new XMLHttpRequest();
-  xmlhttp2.onreadystatechange=function() {
-    if(xmlhttp2.readyState==4 && xmlhttp2.status==200) {
-      document.getElementById("board-box").innerHTML=xmlhttp2.responseText;
-    }
-  };
-  xmlhttp2.open("GET","/board.txt",true);
-  xmlhttp2.send(null);
-}
-
-function refresher() {
-  loadInfo();
-  loadBoard();
-  setTimeout("refresher()",#{@@sleep_time * 1000});
-}
-
-refresher();
-</script>
-</head>
-
-<body>
-<div id="board-box">
-</div>
-
-<div id="info-box">
-</div>
-</body>
-</html>
-HTML
-
+    File.read("web/main.html").sub "SLEEP_TIME", (@@sleep_time * 1000).to_s
   end
 end
