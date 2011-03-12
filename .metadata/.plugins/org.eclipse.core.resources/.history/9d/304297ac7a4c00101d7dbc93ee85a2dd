@@ -95,7 +95,7 @@ class GameState {
     			ev = ev_check;
     		} else {
     			ev_raise = successor(Action.RAISE).EV();
-    			ev = p_fold * ev_fold + p_check * ev_check + p_raise * ev_raise;
+    			ev = 0.5 * ev_check + 0.5 * ev_raise;
     		}
     		break;
     	}

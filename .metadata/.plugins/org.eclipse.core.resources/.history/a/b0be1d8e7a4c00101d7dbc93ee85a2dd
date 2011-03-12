@@ -85,8 +85,6 @@ class GameState {
 	        
 			double[] actionProbabilities = gameInfo.opponentModel.actionProbabilities(actionHistory);
 			double p_fold = actionProbabilities[0];
-			double p_check = actionProbabilities[1];
-			double p_raise = actionProbabilities[2];
 			
     		ev_fold = opponentBetAmount;
     		ev_check = successor(Action.CHECK).EV();
@@ -95,7 +93,7 @@ class GameState {
     			ev = ev_check;
     		} else {
     			ev_raise = successor(Action.RAISE).EV();
-    			ev = p_fold * ev_fold + p_check * ev_check + p_raise * ev_raise;
+    			ev = 0.5 * ev_check + 0.5 * ev_raise;
     		}
     		break;
     	}
