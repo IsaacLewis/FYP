@@ -1,22 +1,14 @@
 package me.saac.i.ai;
 import java.net.*;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.regex.*;
 
-import pokerai.game.eval.spears.Card;
-
-import me.saac.i.ai.GameInfo.Dealer;
-import me.saac.i.ai.GameState.Action;
-import me.saac.i.ai.GameState.BettingRound;
-import me.saac.i.ai.GameState.NodeType;
 
 public class Client {
     static int portOffset = 7000;
     static int inputLength = 124;
     static Pattern inputPrompt = Pattern.compile("your move?");
     static int playerNo;
-    static String name = "TeaBot";
     static Player player;
     static boolean useImprovedOpponentModel;
     
@@ -33,11 +25,13 @@ public class Client {
 	PrintWriter out = 
 	    new PrintWriter(socket.getOutputStream(), true);
 	
-	out.print("My name is " + name);
-	out.flush();
 
 	useImprovedOpponentModel = args.length > 1 && "--improved".matches(args[1]);
 	player = new Player(useImprovedOpponentModel);
+	
+	out.print("My name is " + player.name);
+	out.flush();
+
 	char[] cbuf = new char[inputLength];
 	String input;
 

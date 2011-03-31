@@ -1,4 +1,4 @@
-#Mon Dec 27 12:25:39 GMT 2010
+#Wed Mar 16 19:12:12 HKT 2011
 content_assist_proposals_foreground=58,57,53
 spelling_locale=en_GB
 spelling_locale_initialized=true
@@ -12,10 +12,11 @@ fontPropagated=true
 org.eclipse.jdt.ui.text.custom_code_templates=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><templates/>
 org.eclipse.jdt.ui.javadoclocations.migrated=true
 proposalOrderMigrated=true
-org.eclipse.jdt.ui.formatterprofiles.version=11
+breadcrumb.org.eclipse.jdt.ui.JavaPerspective=true
 content_assist_proposals_background=255,255,255
+org.eclipse.jdt.ui.formatterprofiles.version=11
 content_assist_number_of_computers=13
 useQuickDiffPrefPage=true
 org.eclipse.jdt.ui.text.custom_templates=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><templates/>
-content_assist_lru_history=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><history maxLHS\="100" maxRHS\="10"/>
+content_assist_lru_history=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><history maxLHS\="100" maxRHS\="10"><lhs name\="me.saac.i.ai.Player"><rhs name\="me.saac.i.ai.Player"/></lhs></history>
 org.eclipse.jdt.ui.text.code_templates_migrated=true

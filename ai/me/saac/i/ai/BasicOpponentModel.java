@@ -1,27 +1,26 @@
 package me.saac.i.ai;
 
-import me.saac.i.ai.GameState.Action;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BasicOpponentModel implements OpponentModel {
 
+	// TODO: discover why EV for check and raise always 0 on first hand
+	
     // Hash Map which maps (number of raises) to an int array
     // representing the histogram for that number of raises
 
 	private HashMap<Integer, int[]> historyToHandStrength = new HashMap<Integer, int[]>();
+	
+	// keep track of opponent actions
+	private long opponentChecks = 0;
+	private long opponentRaises = 0;
+	private long opponentFolds = 0;
 
     // takes current history and player hand strength and calculates win probability
-	public double winPossibility(ArrayList<Action> history, int playerHandStrength) {
-
+	public double winPossibility(ActionList history, GameInfo gameInfo, int playerHandStrength) {
+		
 	        // find number of raise actions in history
-		int numRaises = 0;
-		for(Action a : history) {
-			if(a == Action.RAISE) {
-				numRaises++;
-			}
-		}
+		int numRaises = history.numberOfRaises();
 		
 		// find histogram and adjusted hand strength
 		int[] histogram = historyToHandStrength.get(numRaises);
@@ -47,36 +46,49 @@ public class BasicOpponentModel implements OpponentModel {
 		return (double) handsPlayerWins / (handsPlayerWins + handsOpponentWins);
 	}
 	
-    // when a hand is finished, update the opponent model with the data from the hand
-	public void input(ArrayList<Action> history, int handStrength) {
-	        // calculate number of raise actions in history
-		int numRaises = 0;
-		for(Action a : history) {
-			if(a == Action.RAISE) {
-				numRaises++;
+    // Basic opponent model only updates when the hand is finished
+	public void inputAction(ActionList history, GameState gameState) {
+
+	}
+	
+   // when opponent acts, update the opponent model with hand data
+	public void inputEndOfHand(ActionList history, GameState gameState) {
+		int handStrength = gameState.knownCards.evaluateOpponentHand();
+		GameInfo gameInfo = gameState.gameInfo;
+		
+		if(handStrength != -1) {
+			int numRaises = history.numberOfRaises();
+			
+			// calculate adjusted hand strength
+			int ahs = adjustedHandStrength(handStrength);
+
+			// if there is no history, initialize an empty int array
+			if(historyToHandStrength.get(numRaises) == null) {
+				int[] histogram = new int[] {0,0,0,0,0,0,0,0,0,0};
+				historyToHandStrength.put(numRaises, histogram);
+			}
+
+			// find existing histogram and increment appropriate slot
+			int[] histogram = historyToHandStrength.get(numRaises);
+			histogram[ahs] = histogram[ahs] + 1;
+		
+			System.out.print("OpponentModel["+numRaises+"] <- ");
+			for(int i = 0; i < histogram.length; i++) {
+				System.out.print(histogram[i] + " - ");
 			}
 		}
 		
-		// calculate adjusted hand strength
-		int ahs = adjustedHandStrength(handStrength);
-
-		// if there is no history, initialize an empty int array
-		if(historyToHandStrength.get(numRaises) == null) {
-			int[] histogram = new int[] {0,0,0,0,0,0,0,0,0,0};
-			historyToHandStrength.put(numRaises, histogram);
-		}
-
-		// find existing histogram and increment appropriate slot
-		int[] histogram = historyToHandStrength.get(numRaises);
-		histogram[ahs] = histogram[ahs] + 1;
+		ActionList opponentActions = history.opponentActions(gameInfo);
+		opponentRaises += opponentActions.numberOfRaises();
+		opponentChecks += opponentActions.numberOfChecks();
+		opponentFolds += opponentActions.numberOfFolds();
+		double[] ap = actionProbabilities(history, gameState);
 		
-		System.out.print("OpponentModel["+numRaises+"] <- ");
-		for(int i = 0; i < histogram.length; i++) {
-			System.out.print(histogram[i] + " - ");
-		}
+		System.out.println("\nOpponent actions (r/c/f): " + opponentRaises + " / " + 
+				opponentChecks + " / "  + opponentFolds);
+		System.out.println("AP: " + ap[0] + " / " + ap[1] + " / " + ap[2]);
 	}
 	
-
 	private int adjustedHandStrength(int rawHandStrength) {
 		int ahs = rawHandStrength / 1000;
 		return Math.min(ahs, 9);
@@ -84,9 +96,12 @@ public class BasicOpponentModel implements OpponentModel {
 
     // takes history and returns an array of opponent probabilities
     // for {fold, call, raise}.
-    // TODO: implement
-	public double[] actionProbabilities(ArrayList<Action> history) {
-		return new double[] {0, 0.5, 0.5};
+	public double[] actionProbabilities(ActionList history, GameState gameState) {
+		long totalActions = Math.max(1, opponentRaises + opponentChecks + opponentFolds);
+		
+		return new double[] {((double) opponentRaises / totalActions), 
+				((double) opponentChecks / totalActions), 
+				((double) opponentFolds / totalActions)};
 	}
 
 

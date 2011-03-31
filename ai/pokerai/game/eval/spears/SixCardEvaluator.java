@@ -73,7 +73,6 @@ public class SixCardEvaluator implements HandEvaluatorSpears {
 	}
 	
 		
-	@SuppressWarnings("unused")
 	private static void generate(String path) throws Exception {
 		HashMap<Long, Integer> ranks = new HashMap<Long, Integer>();
 		int[] i = new int[6];

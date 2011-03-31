@@ -1,6 +1,29 @@
+require "poker.rb"
+
 class Card
   attr_reader :card_id, :suit_index, :rank_index
   include Comparable
+
+  # generates a card from a string eg "As", "5h", etc
+  def Card.parse(str)
+    letters = str.split ''
+    if letters[0] =~ /[2-9]/ then rank = letters[0].to_i
+    else rank = 
+        {"T" => :Ten,
+        "J" => :Jack,
+        "Q" => :Queen,
+        "K" => :King,
+        "A" => :Ace}[letters[0]]
+    end
+
+    suit = 
+      {"h" => :Hearts,
+      "s" => :Spades,
+      "c" => :Clubs,
+      "d" => :Diamonds}[letters[1]]
+
+    Card.new rank, suit
+  end
 
   def <=>(compared_card)
     @rank_index <=> compared_card.rank_index

@@ -106,16 +106,14 @@ class Game
     call_cost = opponent.bet.chips - player.bet.chips
     raise_cost = (opponent.bet.chips + bet_size) - player.bet.chips
 
-    action = nil
     if @bets_this_round < Poker::MaxRaisesPerRound
       permitted_actions = ["c","r","f","b"]
     else
       permitted_actions = ["c","f"]
     end
-    
-    until permitted_actions.include? action
-      action = player.input_action call_cost, raise_cost
-    end
+
+    action = player.input_action call_cost, raise_cost    
+    action = 'c' unless permitted_actions.include? action
     
     case action
     when "c"

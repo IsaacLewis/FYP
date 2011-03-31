@@ -1,6 +1,5 @@
 package me.saac.i.ai;
 
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,17 +17,19 @@ public class Player {
     static Pattern dealerMsg = Pattern.compile("Dealer: ([A-z0-9]+)");
     static Pattern bettingRoundMsg = Pattern.compile("Dealing the ([A-z]+)");
     static Pattern chipDistributionMsg = Pattern.compile("Chips: [0-9]+,([0-9]+),([0-9]+),([0-9]+),[0-9]+");
-    static Pattern playerActionMsg = Pattern.compile("Player action: [A-z0-9]+ ([A-z]+)");
+    static Pattern playerActionMsg = Pattern.compile("Player action: ([A-z0-9]+) ([A-z]+)");
     static Pattern playerHandMsg = Pattern.compile("is dealt [A-z0-9 ]+ \\((..),(..)\\)");
     static Pattern boardCardMsg = Pattern.compile("\\((..)\\) is dealt to the board");
     static Pattern showdownMsg = Pattern.compile("Player ([A-z0-9]+) shows (..) (..)");
+    static Pattern handWonMsg = Pattern.compile("wins [0-9]+ chips!");
     
     // variables to keep track of game state
     // TODO: consider making these non-static and creating an instance of Client?
-    String name = "JavaBot";
+    String name;
     BettingRound bettingRound;
-    ArrayList<Action> actionHistory;
+    ActionList actionHistory;
     CardArray knownCards;
+    CardArray opponentCards;
     GameInfo gameInfo;
     Dealer dealer;
     int playerBetAmount;
@@ -37,13 +38,16 @@ public class Player {
     int playerNo;
     OpponentModel opponentModel;
     
-    Player(boolean useImprovedOpponentModel) {
+    public Player(boolean useImprovedOpponentModel) {
     	if(useImprovedOpponentModel) {
-    		System.out.println("using improved");
+    		System.out.println("using improved opponent model");
     		opponentModel = new ImprovedOpponentModel();
+    		name = "CoffeeBot";
     	} else {
     		opponentModel = new BasicOpponentModel();
+    		name = "TeaBot";
     	}
+    	resetStateVariables();
     }
     
     
@@ -60,16 +64,17 @@ public class Player {
     	Matcher playerHandMatcher = playerHandMsg.matcher(str);
     	Matcher boardCardMatcher = boardCardMsg.matcher(str);
     	Matcher showdownMatcher = showdownMsg.matcher(str);
+    	Matcher handWonMatcher = handWonMsg.matcher(str);
     	
     	// update state as appropriate depending on input
 
     	if(str.substring(0,7).equals("Hand No")) {
     		resetStateVariables();
-    		System.out.println("Resetting vars for new hand");
+    		// System.out.println("Resetting vars for new hand");
     		
     	} else if(betSizeMatcher.find()) {
     		smallBetSize = Integer.parseInt(betSizeMatcher.group(1));
-    		System.out.println("smallBetSize <- " + smallBetSize);
+    		// System.out.println("smallBetSize <- " + smallBetSize);
     		
     	} else if(dealerMatcher.find()) {
     		if(dealerMatcher.group(1).matches(name)) {
@@ -77,11 +82,11 @@ public class Player {
     		} else {
     			dealer = Dealer.OPPONENT;
     		}
-    		System.out.println("dealer <- " + dealer);
+    		// System.out.println("dealer <- " + dealer);
     		
     	} else if(bettingRoundMatcher.find()) {
     		bettingRound = BettingRound.valueOf(bettingRoundMatcher.group(1).toUpperCase());
-    		System.out.println("bettingRound <- " + bettingRound);
+    		// System.out.println("bettingRound <- " + bettingRound);
     		actionHistory.add(Action.DEAL);
     		
     	} else if(chipDistributionMatcher.find()) {
@@ -98,17 +103,24 @@ public class Player {
     			playerBetAmount = player2bet + (int) (potSize * 0.5);
     			opponentBetAmount = player1bet + (int) (potSize * 0.5);
     		}
-    		System.out.println("playerBetAmount <- " + playerBetAmount);
-    		System.out.println("opponentBetAmount <- " + opponentBetAmount);
+    		// System.out.println("playerBetAmount <- " + playerBetAmount);
+    		// System.out.println("opponentBetAmount <- " + opponentBetAmount);
     		
     	} else if(playerActionMatcher.find()) {
-    		String action = playerActionMatcher.group(1);
+    		String action = playerActionMatcher.group(2);
     		if(action.equals("calls") || action.equals("checks")) {
     			actionHistory.add(Action.CHECK);
     		} else if(action.equals("bets") || action.equals("raises")) {
     			actionHistory.add(Action.RAISE);
     		} else {
     			actionHistory.add(Action.FOLD);
+    		}
+    		
+    		if(!playerActionMatcher.group(1).equals(name)) {
+    			// if it was an opponent action, update the opponent model
+    			GameState currentState = new GameState(NodeType.OPPONENT, bettingRound, playerBetAmount, 
+            		opponentBetAmount, knownCards, actionHistory, gameInfo);
+    			opponentModel.inputAction(actionHistory, currentState);
     		}
     	
     	} else if(playerHandMatcher.find()) {
@@ -125,13 +137,17 @@ public class Player {
     		System.out.println();
     		
     	} else if(showdownMatcher.find()) {
+    		
+    		// add revealed opponent cards to known cards
     		if(!showdownMatcher.group(1).equals(name)) {
-    			CardArray opponentCards = knownCards.subset(2, 7);
-    			opponentCards.add(Card.parse(showdownMatcher.group(2)));
-    			opponentCards.add(Card.parse(showdownMatcher.group(3)));
-    			
-    			opponentModel.input(actionHistory, opponentCards.evaluate());
+    			knownCards.add(Card.parse(showdownMatcher.group(2)));
+    			knownCards.add(Card.parse(showdownMatcher.group(3)));
     		}
+    		
+    	} else if(handWonMatcher.find()) {
+        	GameState currentState = new GameState(NodeType.PLAYER, bettingRound, playerBetAmount, 
+            		opponentBetAmount, knownCards, actionHistory, gameInfo);
+			opponentModel.inputEndOfHand(actionHistory, currentState);
     	}
        }
     
@@ -182,14 +198,29 @@ public class Player {
     	} else {
 	    // if it's preflop, just check/call
 	    // TODO: implement proper preflop strategy
-    		result = 'c';
+    		int handStrength = 0;
+    		handStrength += knownCards.cards[0].rank.ordinal();
+    		handStrength += knownCards.cards[1].rank.ordinal();
+    		if(knownCards.cards[0].rank == knownCards.cards[1].rank) 
+    			handStrength += 6;
+    		System.out.println("HandStrength: " + handStrength);
+    		if(handStrength > 13) {
+    			if(handStrength > 20) {
+    				result = 'r';
+    			} else {
+    				result = 'c';
+    			}
+    			
+    		} else {
+    			result = 'f';
+    		}
     	}	
     	return result;
     }
     
     void resetStateVariables() {
         bettingRound = BettingRound.PREFLOP;
-        actionHistory = new ArrayList<Action>();
+        actionHistory = new ActionList();
         knownCards = new CardArray();
         playerBetAmount = 0;
         opponentBetAmount = 0;

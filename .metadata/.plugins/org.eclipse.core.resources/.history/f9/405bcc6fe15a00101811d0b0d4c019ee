@@ -1,0 +1,148 @@
+package me.saac.i.ai;
+
+import java.util.HashMap;
+
+import me.saac.i.ai.GameState.Action;
+import weka.classifiers.Classifier;
+import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.MultilayerPerceptron;
+import weka.core.*;
+
+
+public class ImprovedOpponentModel implements OpponentModel {
+
+	Attribute raisesThisHand = new Attribute("raisesThisHand");
+	Attribute callsThisHand = new Attribute("callsThisHand");
+	Attribute nextMove;
+	Classifier classifier;
+	Instances trainingData;
+	
+    // Hash Map which maps (number of raises) to an int array
+    // representing the histogram for that number of raises
+	private HashMap<Integer, int[]> historyToHandStrength = new HashMap<Integer, int[]>();
+
+	public ImprovedOpponentModel() {
+		FastVector fv = new FastVector(3);
+		fv.addElement("FOLD");
+		fv.addElement("CHECK");
+		fv.addElement("RAISE");
+		nextMove = new Attribute("nextMove", fv);
+		FastVector attrs = new FastVector(3);
+		attrs.addElement(callsThisHand);
+		attrs.addElement(raisesThisHand);
+		attrs.addElement(nextMove);
+		trainingData = new Instances("trainingData", attrs,100);
+		trainingData.setClass(nextMove);		
+	}
+	
+    // takes current history and player hand strength and calculates win probability
+	public double winPossibility(ActionList history, GameInfo gameInfo, int playerHandStrength) {
+	    // find number of raise actions in history
+		int numRaises = history.numberOfRaises();
+		
+		// find histogram and adjusted hand strength
+		int[] histogram = historyToHandStrength.get(numRaises);
+		int aphs = adjustedHandStrength(playerHandStrength);
+		
+		// if there is no observed history for this number of raises,
+		// return a default probability based on adjusted hand strength
+		if(histogram == null)
+			return 1 - (aphs / 8);
+		
+		
+		// calculate win% = hands player can defeat / total hands
+		int handsPlayerWins = 0;
+		int handsOpponentWins = 0;
+		int i;
+		for(i = 0; i < aphs; i++) {
+			handsOpponentWins += histogram[i];
+		}
+		for(; i < histogram.length; i++) {
+			handsPlayerWins += histogram[i];
+		}
+		
+		return (double) handsPlayerWins / (handsPlayerWins + handsOpponentWins);
+	}
+	
+	public void updateHistogram(ActionList history, int handStrength) {
+		int numRaises = history.numberOfRaises();
+		
+		// calculate adjusted hand strength
+		int ahs = adjustedHandStrength(handStrength);
+
+		// if there is no history, initialize an empty int array
+		if(historyToHandStrength.get(numRaises) == null) {
+			int[] histogram = new int[] {0,0,0,0,0,0,0,0,0,0};
+			historyToHandStrength.put(numRaises, histogram);
+		}
+
+		// find existing histogram and increment appropriate slot
+		int[] histogram = historyToHandStrength.get(numRaises);
+		histogram[ahs] = histogram[ahs] + 1;
+	
+		System.out.print("OpponentModel["+numRaises+"] <- ");
+		for(int i = 0; i < histogram.length; i++) {
+			System.out.print(histogram[i] + " - ");
+		}		
+	}
+	
+    // when an opponent action is received, update the opponent model
+	// (last action in history is the opponents latest action)
+	public void inputAction(ActionList history, GameState gameState) {
+		
+		Instance newInstance = gameStateToInstance(history, gameState);
+		System.out.println("Adding training instance: " + newInstance.toString());
+		trainingData.add(newInstance);
+	}
+	
+	private Instance gameStateToInstance(ActionList history, GameState gameState) {
+		Instance newInstance = new Instance(3);
+		
+		// since last action is history is the opponent's latest action, remove it from the list
+		// (since it's the thing we're trying to predict)
+		Action nextAction = history.lastAction();
+		history.remove(history.size() - 1); 
+		
+		newInstance.setValue(callsThisHand, history.numberOfChecks());
+		newInstance.setValue(raisesThisHand, history.numberOfRaises());
+		newInstance.setValue(nextMove, nextAction.toString());
+		
+		return newInstance;
+			
+	}
+	
+    // when a hand has finished, update the opponent model
+	public void inputEndOfHand(ActionList history, GameState gameState) {
+		int handStrength = gameState.knownCards.evaluateOpponentHand();
+		if(handStrength != -1) {
+			updateHistogram(history, handStrength);
+		}
+		
+		try {
+			classifier = new MultilayerPerceptron();
+			classifier.buildClassifier(trainingData);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("\n"+classifier.toString());
+	
+
+	}
+	
+	private int adjustedHandStrength(int rawHandStrength) {
+		int ahs = rawHandStrength / 1000;
+		return Math.min(ahs, 9);
+	}
+	
+	public double[] actionProbabilities(ActionList history, GameState gameState) {
+		Instance currentState = gameStateToInstance(history, gameState);
+		double[] ap = new double[3];
+		try {
+			ap = classifier.distributionForInstance(currentState);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ap;
+	}
+}

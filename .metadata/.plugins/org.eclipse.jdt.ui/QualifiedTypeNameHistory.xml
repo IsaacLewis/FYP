@@ -9,6 +9,13 @@
 <fullyQualifiedTypeName name="java.util.Hashtable"/>
 <fullyQualifiedTypeName name="pokerai.game.eval.spears.FiveCardEvaluator"/>
 <fullyQualifiedTypeName name="pokerai.game.eval.spears.SevenCardEvaluator"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="pokerai.game.eval.spears.SixCardEvaluator"/>
+<fullyQualifiedTypeName name="me.saac.i.ai.Player"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="me.saac.i.ai.GameInfo.Dealer"/>
+<fullyQualifiedTypeName name="weka.core.FastVector"/>
+<fullyQualifiedTypeName name="weka.classifiers.bayes.NaiveBayes"/>
+<fullyQualifiedTypeName name="me.saac.i.ai.GameState.Action"/>
+<fullyQualifiedTypeName name="weka.classifiers.functions.MultilayerPerceptron"/>
+<fullyQualifiedTypeName name="weka.classifiers.Classifier"/>
 </qualifiedTypeNameHistroy>

@@ -2,5 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/weka.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/home/isaac/weka-3-6-4/doc/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path=""/>
 </classpath>

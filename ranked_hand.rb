@@ -1,3 +1,5 @@
+require "rank.rb"
+
 class RankedHand
   attr_reader :rank, :best_cards
 

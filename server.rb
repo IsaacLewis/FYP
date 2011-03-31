@@ -30,7 +30,9 @@ class PokerServer
     $players.each {|player| player.send str}
   end
 
-  def match(starting_stacks)
+  def match(starting_stacks, max_hands=nil)
+    $log_file = File.open "log.csv", "w"
+
     small_bet = 2
     $players.each {|player| player.chips = starting_stacks}
     $pot = ChipStore.new
@@ -38,10 +40,11 @@ class PokerServer
     match_won = false
     hand_no = 1
 
-    until match_won
+    until match_won or (not max_hands.nil? and hand_no > max_hands)
       send "\n-------\n\n"
       send "Hand No: #{hand_no}"
       
+      $log_file.write $player2.chips.to_s + ","
       game = Game.new $players, $pot, small_bet
       $players, $pot = game.play!
       
@@ -54,11 +57,12 @@ class PokerServer
           end
           send "#{loser.name} is out of chips. #{winner.name} is victorious!"
           match_won = true
+          $log_file.close
           return winner, loser
         end
       end
       $players.reverse! # so blinds rotate
-      small_bet += 1
+      # small_bet *= 2 if hand_no % 50 == 0
       hand_no += 1
     end
   end
