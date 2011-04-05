@@ -1,7 +1,7 @@
 require 'socket'
 
 class Player
-  attr_accessor :hand, :acted
+  attr_accessor :hand, :acted, :hands_won_by_opponent_folds, :chips_won_by_opponent_folds, :hands_won_at_showdown, :chips_won_at_showdown
   attr_reader :name, :bet, :session
 
   include ChipStoreModule
@@ -17,6 +17,18 @@ class Player
     @hand = []
     @bet = ChipStore.new
     @acted = false
+    @hands_won_by_opponent_folds, @chips_won_by_opponent_folds, @hands_won_at_showdown, @chips_won_at_showdown = 0,0,0,0
+  end
+
+  def match_stats
+    str = ["hands_won_by_opponent_folds", "chips_won_by_opponent_folds", "hands_won_at_showdown", "chips_won_at_showdown"].map {|var|
+      var + ": " + instance_variable_get("@"+var).to_s + "\n"
+    }.join
+    str += "Average won at showdown: " + 
+      (chips_won_at_showdown.to_f / hands_won_at_showdown).to_s + "\n"
+    str += "Average won by opponent folds: " + 
+      (chips_won_by_opponent_folds.to_f / hands_won_by_opponent_folds).to_s + "\n"
+    str
   end
 
   def discard

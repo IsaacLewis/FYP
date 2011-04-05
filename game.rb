@@ -12,8 +12,8 @@ class Game
     @deck = Deck.new
     @board = []
 
-	$server.send "Dealer: " + @players[1].name
-	$server.send "Small bet: " + @small_bet.to_s
+    $server.send "Dealer: " + @players[1].name
+    $server.send "Small bet: " + @small_bet.to_s
     $server.send chip_distribution
   end
 
@@ -136,6 +136,8 @@ class Game
     when "f"
       @players.each {|p| p.bet.give_chips @pot, :all}
       $server.send "Player action: #{player.name} folds!"
+      opponent.hands_won_by_opponent_folds += 1
+      opponent.chips_won_by_opponent_folds += @pot.chips
       game_won_by opponent
 
     end
@@ -190,6 +192,8 @@ class Game
 
   def game_won_by(winner)
     $server.send "#{winner.name} wins #{@pot.chips} chips!"
+    winner.hands_won_at_showdown += 1
+    winner.chips_won_at_showdown += @pot.chips
     @pot.give_chips winner, :all
     $server.send chip_distribution
     @pot_size = 0
