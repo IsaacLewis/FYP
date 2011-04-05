@@ -28,7 +28,7 @@ class PokerServer
   end
 
   def send(str)
-    puts str
+    puts str unless $quiet
     $players.each {|player| player.send str}
   end
 
@@ -46,7 +46,7 @@ class PokerServer
       send "\n-------\n\n"
       send "Hand No: #{hand_no}"
       
-      $log_file.write $player2.chips.to_s + "\n"
+      $log_file.write $player1.chips.to_s + "\n"
       game = Game.new $players, $pot, small_bet
       $players, $pot = game.play!
       

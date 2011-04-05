@@ -15,15 +15,30 @@ public class ImprovedOpponentModel implements OpponentModel {
 	Attribute totalRaiseFrequency = new Attribute("playerRaiseFrequency");
 	Attribute opponentsLastActionWasRaise = new Attribute("opponentsLastActionWasRaise");
 	Attribute potOdds = new Attribute("potOdds");
-	Attribute handStrength = new Attribute("handStrength");
 	Attribute nextMove;
 	Attribute currentRound;
 	int numAttrs = 6;
 	
 	Classifier actionClassifier = null;
-	Classifier handStrengthClassifier = null;
 	Instances actionData;
-	Instances handStrengthData;
+	
+	// for calculating adjusted hand rank
+	int[] boundaries = {
+			1602,
+			540,
+			488,
+			238,
+			245,
+			258,
+			430,
+			441,
+			440,
+			441,
+			441,
+			422,
+			298,
+			430,
+			1000};
 	
     // Hash Map which maps (number of raises) to an int array
     // representing the histogram for that number of raises
@@ -53,20 +68,13 @@ public class ImprovedOpponentModel implements OpponentModel {
 		
 		actionData = new Instances("actionData", attrs, 100);
 		actionData.setClass(nextMove);
-		
-		FastVector attrs2 = new FastVector(3);
-		attrs2.addElement(opponentRaiseFrequency);
-		attrs2.addElement(totalRaiseFrequency);
-		attrs2.addElement(handStrength);		
-		
-		handStrengthData = new Instances("handStrengthData", attrs2, 1000);
-		handStrengthData.setClass(handStrength);
+
 	}
 	
     // takes current history and player hand strength and calculates win probability
 	public double winPossibility(ActionList history, GameInfo gameInfo, int playerHandStrength) {
 	    // find number of raise actions in history
-		int numRaises = history.numberOfRaises();
+		int numRaises = history.opponentActions(gameInfo).numberOfRaises();
 		
 		// find histogram and adjusted hand strength
 		int[] histogram = historyToHandStrength.get(numRaises);
@@ -75,7 +83,7 @@ public class ImprovedOpponentModel implements OpponentModel {
 		// if there is no observed history for this number of raises,
 		// return a default probability based on adjusted hand strength
 		if(histogram == null)
-			return 1.0 - ((double) aphs / 8);
+			return 1.0 - ((double) aphs / 16);
 		
 		
 		// calculate win% = hands player can defeat / total hands
@@ -92,15 +100,15 @@ public class ImprovedOpponentModel implements OpponentModel {
 		return (double) handsPlayerWins / (handsPlayerWins + handsOpponentWins);
 	}
 	
-	public void updateHistogram(ActionList history, int handStrength) {
-		int numRaises = history.numberOfRaises();
+	public void updateHistogram(ActionList history, GameInfo gameInfo, int handStrength) {
+		int numRaises = history.opponentActions(gameInfo).numberOfRaises();
 		
 		// calculate adjusted hand strength
 		int ahs = adjustedHandStrength(handStrength);
 
 		// if there is no history, initialize an empty int array
 		if(historyToHandStrength.get(numRaises) == null) {
-			int[] histogram = new int[] {0,0,0,0,0,0,0,0,0,0};
+			int[] histogram = new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 			historyToHandStrength.put(numRaises, histogram);
 		}
 
@@ -116,10 +124,11 @@ public class ImprovedOpponentModel implements OpponentModel {
 	
     // when an opponent action is received, update the opponent model
 	// (last action in history is the opponents latest action)
-	public void inputAction(ActionList history, GameState gameState) {
+	public void inputAction(ActionList h, GameState gameState) {
 		
 		// since last action is history is the opponent's latest action, remove it from the list
 		// (since it's the thing we're trying to predict)
+		ActionList history = (ActionList) h.clone();
 		Action nextAction = history.lastAction();
 		history.remove(history.size() - 1); 
 		
@@ -161,7 +170,7 @@ public class ImprovedOpponentModel implements OpponentModel {
 	public void inputEndOfHand(ActionList history, GameState gameState) {
 		int handStrength = gameState.knownCards.evaluateOpponentHand();
 		if(handStrength != -1) {
-			updateHistogram(history, handStrength);
+			updateHistogram(history, gameState.gameInfo, handStrength);
 		}
 		
 		try {
@@ -178,8 +187,19 @@ public class ImprovedOpponentModel implements OpponentModel {
 	}
 	
 	private int adjustedHandStrength(int rawHandStrength) {
-		int ahs = rawHandStrength / 1000;
-		return Math.min(ahs, 9);
+		int ahs = 0;
+		for(int j = 0; j < 15; j++) {
+			if(rawHandStrength < boundaries[j]) {
+				ahs = j;
+				break;
+			} else if(j == 14) {
+				ahs = j;
+				break;
+			} else {
+				rawHandStrength -= boundaries[j];
+			}
+		}
+		return Math.min(ahs, 15);
 	}
 	
 	public double[] actionProbabilities(ActionList history, GameState gameState) {

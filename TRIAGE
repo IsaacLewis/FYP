@@ -1,8 +1,22 @@
 Important stuff
 
 Write Final Report
-Add Preflop Strategy
+Add Preflop Strategy X
 Improve Showdown Win% Estimation
 Design Experimentation Strategy
+- test prediction power of ML algos
 Perform Experiments
 Choose Input Variables
+
+---
+
+improving performance
+- added preflop selection
+- fixed win% estimation bug (doubles)
+- hand evaluation non-uniform
+- opponent modelling
+
+(random: [66583, 66513, 66759, 66775, 66840, 66560, 66451, 66387, 67005, 66449, 66269, 66574, 67055, 67004, 66776])
+actual: - 32129- 11927- 11715- 70848- 36493- 141012- 117562- 76684- 80244- 74030- 71360- 80728- 106934- 58513- 29821)
+
+- folding out of turn

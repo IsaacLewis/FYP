@@ -179,6 +179,9 @@ class Game
     else
       winning_hand = hands.max
       winner = @players[hands.index winning_hand]
+      winner.hands_won_at_showdown += 1
+      winner.chips_won_at_showdown += @pot.chips
+
       game_won_by winner
     end
   end
@@ -192,8 +195,6 @@ class Game
 
   def game_won_by(winner)
     $server.send "#{winner.name} wins #{@pot.chips} chips!"
-    winner.hands_won_at_showdown += 1
-    winner.chips_won_at_showdown += @pot.chips
     @pot.give_chips winner, :all
     $server.send chip_distribution
     @pot_size = 0

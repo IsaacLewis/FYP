@@ -21,7 +21,7 @@ class Player
   end
 
   def match_stats
-    str = ["hands_won_by_opponent_folds", "chips_won_by_opponent_folds", "hands_won_at_showdown", "chips_won_at_showdown"].map {|var|
+    str = ["name", "hands_won_by_opponent_folds", "chips_won_by_opponent_folds", "hands_won_at_showdown", "chips_won_at_showdown"].map {|var|
       var + ": " + instance_variable_get("@"+var).to_s + "\n"
     }.join
     str += "Average won at showdown: " + 

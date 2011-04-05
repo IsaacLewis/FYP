@@ -1,16 +1,16 @@
 name: AlwaysCheck
-hands_won_at_showdown: 37
-chips_won_at_showdown: 312
-hands_folded: 0
-chips_folded_to_opponent: 0
-avg_showdown_winnings: 8.43243243243243
-avg_fold_loss: NaN
+hands_won_by_opponent_folds: 1942
+chips_won_by_opponent_folds: 5826
+hands_won_at_showdown: 3662
+chips_won_at_showdown: 24856
+Average won at showdown: 6.78754778809394
+Average won by opponent folds: 3.0
+
 
 name: RulesBot
-hands_won_at_showdown: 43
-chips_won_at_showdown: 628
-hands_folded: 17
-chips_folded_to_opponent: 51
-avg_showdown_winnings: 14.6046511627907
-avg_fold_loss: 3.0
-
+hands_won_by_opponent_folds: 0
+chips_won_by_opponent_folds: 0
+hands_won_at_showdown: 4076
+chips_won_at_showdown: 50700
+Average won at showdown: 12.4386653581943
+Average won by opponent folds: NaN

@@ -1,0 +1,16 @@
+name: AlwaysCheck
+hands_won_by_opponent_folds: 0
+chips_won_by_opponent_folds: 0
+hands_won_at_showdown: 48
+chips_won_at_showdown: 1344
+Average won at showdown: 28.0
+Average won by opponent folds: NaN
+
+
+name: AlwaysRaise
+hands_won_by_opponent_folds: 0
+chips_won_by_opponent_folds: 0
+hands_won_at_showdown: 49
+chips_won_at_showdown: 1372
+Average won at showdown: 28.0
+Average won by opponent folds: NaN

@@ -22,9 +22,10 @@ public class Player {
     static Pattern boardCardMsg = Pattern.compile("\\((..)\\) is dealt to the board");
     static Pattern showdownMsg = Pattern.compile("Player ([A-z0-9]+) shows (..) (..)");
     static Pattern handWonMsg = Pattern.compile("wins [0-9]+ chips!");
+    static Pattern inputPrompt = Pattern.compile("your move\\? \\(c\\)heck/call \\(([0-9]+)\\), bet/\\(r\\)aise \\(([0-9]+)\\), \\(f\\)old");
+
     
     // variables to keep track of game state
-    // TODO: consider making these non-static and creating an instance of Client?
     String name;
     BettingRound bettingRound;
     ActionList actionHistory;
@@ -153,7 +154,7 @@ public class Player {
     
 
     // return the highest EV action as calculated by the AI
-    char getAction(String str) {
+    char getAction(String prompt) {
     	char result = 'x';
 
 	// create a new gameState object based on state variables
@@ -163,7 +164,10 @@ public class Player {
 
     	System.out.println(currentState.print());
 
-
+        Matcher inputPromptMatcher = inputPrompt.matcher(prompt); 
+    	inputPromptMatcher.find();
+    	int callCost = Integer.parseInt(inputPromptMatcher.group(1));
+    	
     	if(bettingRound != BettingRound.PREFLOP) {
     		System.out.println(currentState.EV());
     		
@@ -177,7 +181,7 @@ public class Player {
     		// if we've already reached the max allowed raises,
     		// don't check for any more
     		if(currentState.reachedMaxRaises()) {
-    			if(ev_fold > ev_check) result = 'f';
+    			if(ev_fold > ev_check && callCost != 0) result = 'f';
     			else result = 'c';
     			
     		} else {
@@ -185,7 +189,7 @@ public class Player {
     			System.out.println("Raise EV: " + ev_raise);
     			
         		if(ev_fold > ev_raise) { 
-        			if(ev_fold > ev_check) result = 'f';
+        			if(ev_fold > ev_check && callCost != 0) result = 'f';
         			else result = 'c';
         		} else {
         			if(ev_raise > ev_check) result = 'r';
@@ -204,7 +208,7 @@ public class Player {
     		if(knownCards.cards[0].rank == knownCards.cards[1].rank) 
     			handStrength += 6;
     		System.out.println("HandStrength: " + handStrength);
-    		if(handStrength > 13) {
+    		if(handStrength > 13 || callCost == 0) {
     			if(handStrength > 20) {
     				result = 'r';
     			} else {

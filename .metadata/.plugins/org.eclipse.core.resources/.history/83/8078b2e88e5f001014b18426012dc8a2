@@ -1,0 +1,232 @@
+package me.saac.i.ai;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import pokerai.game.eval.spears.Card;
+
+import me.saac.i.ai.GameInfo.Dealer;
+import me.saac.i.ai.GameState.Action;
+import me.saac.i.ai.GameState.BettingRound;
+import me.saac.i.ai.GameState.NodeType;
+
+public class Player {
+    // patterns for matching input from the server
+    static Pattern newHandMsg = Pattern.compile("Hand No: ");
+    static Pattern betSizeMsg = Pattern.compile("Small bet: ([0-9]+)");
+    static Pattern dealerMsg = Pattern.compile("Dealer: ([A-z0-9]+)");
+    static Pattern bettingRoundMsg = Pattern.compile("Dealing the ([A-z]+)");
+    static Pattern chipDistributionMsg = Pattern.compile("Chips: [0-9]+,([0-9]+),([0-9]+),([0-9]+),[0-9]+");
+    static Pattern playerActionMsg = Pattern.compile("Player action: ([A-z0-9]+) ([A-z]+)");
+    static Pattern playerHandMsg = Pattern.compile("is dealt [A-z0-9 ]+ \\((..),(..)\\)");
+    static Pattern boardCardMsg = Pattern.compile("\\((..)\\) is dealt to the board");
+    static Pattern showdownMsg = Pattern.compile("Player ([A-z0-9]+) shows (..) (..)");
+    static Pattern handWonMsg = Pattern.compile("wins [0-9]+ chips!");
+    static Pattern inputPrompt = Pattern.compile("your move\\? \\(c\\)heck/call \\(([0-9]+)\\), bet/\\(r\\)aise \\(([0-9]+)\\), \\(f\\)old");
+
+    
+    // variables to keep track of game state
+    String name;
+    BettingRound bettingRound;
+    ActionList actionHistory;
+    CardArray knownCards;
+    CardArray opponentCards;
+    GameInfo gameInfo;
+    Dealer dealer;
+    int playerBetAmount;
+    int opponentBetAmount;
+    int smallBetSize;
+    int playerNo;
+    OpponentModel opponentModel;
+    
+    public Player(boolean useImprovedOpponentModel) {
+    	if(useImprovedOpponentModel) {
+    		System.out.println("using improved opponent model");
+    		opponentModel = new ImprovedOpponentModel();
+    		name = "CoffeeBot";
+    	} else {
+    		opponentModel = new BasicOpponentModel();
+    		name = "TeaBot";
+    	}
+    	resetStateVariables();
+    }
+    
+    
+    // process the input, updating state as appropriate
+    void receive(String str) {
+    	System.out.println("Received '" + str + "'");
+    	
+    	// try to match the input against the different regexs
+    	Matcher betSizeMatcher = betSizeMsg.matcher(str);
+    	Matcher dealerMatcher = dealerMsg.matcher(str);
+    	Matcher bettingRoundMatcher = bettingRoundMsg.matcher(str);
+    	Matcher chipDistributionMatcher = chipDistributionMsg.matcher(str); 
+    	Matcher playerActionMatcher = playerActionMsg.matcher(str);
+    	Matcher playerHandMatcher = playerHandMsg.matcher(str);
+    	Matcher boardCardMatcher = boardCardMsg.matcher(str);
+    	Matcher showdownMatcher = showdownMsg.matcher(str);
+    	Matcher handWonMatcher = handWonMsg.matcher(str);
+    	
+    	// update state as appropriate depending on input
+
+    	if(str.substring(0,7).equals("Hand No")) {
+    		resetStateVariables();
+    		// System.out.println("Resetting vars for new hand");
+    		
+    	} else if(betSizeMatcher.find()) {
+    		smallBetSize = Integer.parseInt(betSizeMatcher.group(1));
+    		// System.out.println("smallBetSize <- " + smallBetSize);
+    		
+    	} else if(dealerMatcher.find()) {
+    		if(dealerMatcher.group(1).matches(name)) {
+    			dealer = Dealer.PLAYER;
+    		} else {
+    			dealer = Dealer.OPPONENT;
+    		}
+    		// System.out.println("dealer <- " + dealer);
+    		
+    	} else if(bettingRoundMatcher.find()) {
+    		bettingRound = BettingRound.valueOf(bettingRoundMatcher.group(1).toUpperCase());
+    		// System.out.println("bettingRound <- " + bettingRound);
+    		actionHistory.add(Action.DEAL);
+    		
+    	} else if(chipDistributionMatcher.find()) {
+    		int player1bet = Integer.parseInt(chipDistributionMatcher.group(1));
+    		int potSize = Integer.parseInt(chipDistributionMatcher.group(2));
+    		int player2bet = Integer.parseInt(chipDistributionMatcher.group(3));
+    		
+    		// each player contributed half the pot amount, so add this to their current bet to
+    		// find their total contribution for this hand
+    		if(playerNo == 1) {
+    			playerBetAmount = player1bet + (int) (potSize * 0.5);
+    			opponentBetAmount = player2bet + (int) (potSize * 0.5);
+    		} else {
+    			playerBetAmount = player2bet + (int) (potSize * 0.5);
+    			opponentBetAmount = player1bet + (int) (potSize * 0.5);
+    		}
+    		// System.out.println("playerBetAmount <- " + playerBetAmount);
+    		// System.out.println("opponentBetAmount <- " + opponentBetAmount);
+    		
+    	} else if(playerActionMatcher.find()) {
+    		String action = playerActionMatcher.group(2);
+    		if(action.equals("calls") || action.equals("checks")) {
+    			actionHistory.add(Action.CHECK);
+    		} else if(action.equals("bets") || action.equals("raises")) {
+    			actionHistory.add(Action.RAISE);
+    		} else {
+    			actionHistory.add(Action.FOLD);
+    		}
+    		
+    		if(!playerActionMatcher.group(1).equals(name)) {
+    			// if it was an opponent action, update the opponent model
+    			GameState currentState = new GameState(NodeType.OPPONENT, bettingRound, playerBetAmount, 
+            		opponentBetAmount, knownCards, actionHistory, gameInfo);
+    			opponentModel.inputAction(actionHistory, currentState);
+    		}
+    	
+    	} else if(playerHandMatcher.find()) {
+    		knownCards.add(Card.parse(playerHandMatcher.group(1)));
+    		knownCards.add(Card.parse(playerHandMatcher.group(2)));
+    		System.out.println("playerHand <- " + knownCards.cards[0].name() + " " + knownCards.cards[1].name());
+    		
+    	} else if(boardCardMatcher.find()) {
+    		knownCards.add(Card.parse(boardCardMatcher.group(1)));
+    		System.out.print("knownCards <- ");
+    		for(int i = 0; i < knownCards.count; i++) {
+    			System.out.print(knownCards.cards[i].toString());
+    		}
+    		System.out.println();
+    		
+    	} else if(showdownMatcher.find()) {
+    		
+    		// add revealed opponent cards to known cards
+    		if(!showdownMatcher.group(1).equals(name)) {
+    			knownCards.add(Card.parse(showdownMatcher.group(2)));
+    			knownCards.add(Card.parse(showdownMatcher.group(3)));
+    		}
+    		
+    	} else if(handWonMatcher.find()) {
+        	GameState currentState = new GameState(NodeType.PLAYER, bettingRound, playerBetAmount, 
+            		opponentBetAmount, knownCards, actionHistory, gameInfo);
+			opponentModel.inputEndOfHand(actionHistory, currentState);
+    	}
+       }
+    
+
+    // return the highest EV action as calculated by the AI
+    char getAction(String prompt) {
+    	char result = 'x';
+
+	// create a new gameState object based on state variables
+    	gameInfo = new GameInfo(smallBetSize, dealer, opponentModel);
+    	GameState currentState = new GameState(NodeType.PLAYER, bettingRound, playerBetAmount, 
+    		opponentBetAmount, knownCards, actionHistory, gameInfo);
+
+    	System.out.println(currentState.print());
+
+        Matcher inputPromptMatcher = inputPrompt.matcher(prompt); 
+    	inputPromptMatcher.find();
+    	int callCost = Integer.parseInt(inputPromptMatcher.group(1));
+    	
+    	if(bettingRound != BettingRound.PREFLOP) {
+    		System.out.println(currentState.EV());
+    		
+    		// calculate ev for fold / check / raise
+    		double ev_fold = -playerBetAmount;
+    		System.out.println("Fold EV: " + ev_fold);
+    		
+    		double ev_check = currentState.successor(Action.CHECK).EV();
+    		System.out.println("Check EV: " + ev_check);
+    		
+    		// if we've already reached the max allowed raises,
+    		// don't check for any more
+    		if(currentState.reachedMaxRaises()) {
+    			if(ev_fold > ev_check) result = 'f';
+    			else result = 'c';
+    			
+    		} else {
+    			double ev_raise = currentState.successor(Action.RAISE).EV();
+    			System.out.println("Raise EV: " + ev_raise);
+    			
+        		if(ev_fold > ev_raise) { 
+        			if(ev_fold > ev_check) result = 'f';
+        			else result = 'c';
+        		} else {
+        			if(ev_raise > ev_check) result = 'r';
+        			else result = 'c';
+        		}
+    		}
+    		
+
+
+    	} else {
+	    // if it's preflop, just check/call
+	    // TODO: implement proper preflop strategy
+    		int handStrength = 0;
+    		handStrength += knownCards.cards[0].rank.ordinal();
+    		handStrength += knownCards.cards[1].rank.ordinal();
+    		if(knownCards.cards[0].rank == knownCards.cards[1].rank) 
+    			handStrength += 6;
+    		System.out.println("HandStrength: " + handStrength);
+    		if(handStrength > 13) {
+    			if(handStrength > 20) {
+    				result = 'r';
+    			} else {
+    				result = 'c';
+    			}
+    			
+    		} else {
+    			result = 'f';
+    		}
+    	}	
+    	return result;
+    }
+    
+    void resetStateVariables() {
+        bettingRound = BettingRound.PREFLOP;
+        actionHistory = new ActionList();
+        knownCards = new CardArray();
+        playerBetAmount = 0;
+        opponentBetAmount = 0;
+        }
+}

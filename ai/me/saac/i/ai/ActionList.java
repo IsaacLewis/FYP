@@ -42,9 +42,17 @@ public class ActionList extends ArrayList<Action> {
 		else opponentsTurn = false;
 		
 		for(Action a : this) {
-			if(opponentsTurn) opponentActions.add(a);
-			
-			opponentsTurn = !opponentsTurn;
+			if(a == Action.DEAL) {
+				if(gameInfo.dealer == Dealer.OPPONENT) opponentsTurn = true;
+				else opponentsTurn = false;		
+			} else {
+				if(opponentsTurn) {
+					opponentActions.add(a);
+					opponentsTurn = false;
+				} else {
+					opponentsTurn = true;
+				}
+			}
 		}
 		
 		return opponentActions;

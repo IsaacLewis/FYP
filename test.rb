@@ -8,7 +8,7 @@ def start_match(player1, player2)
   $s.close
 end
 
-start_match "check_client", "rules_client"
+# start_match "check_client", "rules_client"
 start_match "rules_client", "check_client"
 start_match "raise_client", "rules_client"
 start_match "rules_client", "raise_client"

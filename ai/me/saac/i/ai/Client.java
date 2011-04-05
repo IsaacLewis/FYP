@@ -7,7 +7,7 @@ import java.util.regex.*;
 public class Client {
     static int portOffset = 7000;
     static int inputLength = 124;
-    static Pattern inputPrompt = Pattern.compile("your move?");
+    static Pattern inputPrompt = Pattern.compile("your move\\?");
     static int playerNo;
     static Player player;
     static boolean useImprovedOpponentModel;

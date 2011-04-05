@@ -1,16 +1,16 @@
 name: AlwaysRaise
-hands_won_at_showdown: 14
-chips_won_at_showdown: 636
-hands_folded: 0
-chips_folded_to_opponent: 0
-avg_showdown_winnings: 45.4285714285714
-avg_fold_loss: NaN
+hands_won_by_opponent_folds: 60
+chips_won_by_opponent_folds: 404
+hands_won_at_showdown: 16
+chips_won_at_showdown: 724
+Average won at showdown: 45.25
+Average won by opponent folds: 6.73333333333333
+
 
 name: RulesBot
-hands_won_at_showdown: 17
-chips_won_at_showdown: 1176
-hands_folded: 68
-chips_folded_to_opponent: 505
-avg_showdown_winnings: 69.1764705882353
-avg_fold_loss: 7.42647058823529
-
+hands_won_by_opponent_folds: 0
+chips_won_by_opponent_folds: 0
+hands_won_at_showdown: 23
+chips_won_at_showdown: 1508
+Average won at showdown: 65.5652173913043
+Average won by opponent folds: NaN

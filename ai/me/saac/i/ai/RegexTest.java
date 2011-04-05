@@ -22,6 +22,13 @@ public class RegexTest {
 	FiveCardEvaluator fce = new FiveCardEvaluator();
 	int c5v = fce.evaluate(cardArray5);
 	System.out.println("c5v: " + c5v + " c7v: " + c7v);
+	
+    Pattern inputPrompt = Pattern.compile("your move\\? \\(c\\)heck/call \\(([0-9]+)\\), bet/\\(r\\)aise \\(([0-9]+)\\), \\(f\\)old");
+    String ss = "your move? (c)heck/call (0), bet/(r)aise (2), (f)old";
+    m = inputPrompt.matcher(ss); 
+	System.out.println("Matches: " + m.find());
+	System.out.println("Group: " + m.group(1));
+	System.out.println("Group: " + m.group(2));
     }
 
 }
