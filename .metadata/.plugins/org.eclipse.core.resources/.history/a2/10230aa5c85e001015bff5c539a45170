@@ -1,0 +1,149 @@
+package pokerai.game.eval.spears;
+
+public class Tester {
+	static SevenCardEvaluator evaluator = new SevenCardEvaluator();
+	
+	public static void main(String[] args) {
+		
+		
+		/// test1();
+		// test2();
+		// test3();
+		EM();
+	}
+
+	private static void test1() {
+		String[][] hands = new String[][] {
+				{"Straight Flush", 	"AsKsQsJsTs9s8s"},
+				{"Quads", 			"AcAdAhAsKcKdKs"},
+				{"Full House", 		"AcAdAhKcKdQcQd"},
+				{"Flush", 			"AcKcQcJc9c8c7c"},
+				{"Straight", 		"AcKcQcJcTd9d8d"},
+				{"Trips", 			"AcAdAhKcQcJc9d"},
+				{"Two Pair", 		"AcAdKcKdQcJc9d"},
+				{"Pair", 			"AcAdKcQcJc9d8d"},				
+				{"High Card", 		"AcKcQcJc9d8d7d"},
+		};
+		
+		int[] cactusKevHandRanks = new int[]{
+				1,
+				11,
+				167,
+				323,
+				1600,
+				1610,
+				2468,
+				3326,
+				6186
+		};
+		
+	
+		for (int i = 0; i < hands.length; i++) {
+			String name = hands[i][0];
+			String handString = hands[i][1];
+			int correctRank = cactusKevHandRanks[i];
+			Hand hand = Hand.parse(handString);
+			int rank = evaluator.evaluate(hand.toCards());
+			String check = (rank == correctRank) ? "CORRECT" : "INCORRECT";
+		
+			System.out.println("Hand: " + name + " " + hand + " rank: " + rank + " " + check);
+		}
+		System.out.println();
+	}
+	
+	private static void test2() {
+		String[][] hands = new String[][] {
+				{"Straight Flush", "2h3hTsJsQsKsAs"},
+				{"Quads", "2cAcAd3hAhTsAs"},
+				{"Boat", "Ac4d2hJhAhJsAs"},
+				{"Flush", "JhAh2s4s7sJsAs"},
+				{"Trips", "6dAdJhAh2s4sAs"},
+				{"2 Pair", "4dJhAh2s7sJsAs"},
+				{"High Card", "4d9hJh2s7sQsAs"},
+		};
+		
+		for (int i = 0; i < hands.length; i++) {
+			String name = hands[i][0];
+			String handString = hands[i][1];
+			Hand hand = Hand.parse(handString);
+			int rank = evaluator.evaluate(hand.toCards());
+			System.out.println("Hand: " + name + " " + hand + " " + handString + " rank: " + rank);
+		}
+		System.out.println();
+	}
+	
+	private static void test3() {
+		String s = "9s";
+		String ss = "Ah5d3c4cJd";
+		Card c = Card.parse(s);
+		Card[] cc = Card.parseArray(ss);
+		System.out.println(c.name());
+		for(Card c1 : cc) {
+			System.out.println(c1.name());
+		}
+		Hand hand = Hand.parse("7c2s5h4d6s");
+		int rank = (new FiveCardEvaluator()).evaluate(hand.toCards());
+		System.out.println("Hand: " + hand + " " + " rank: " + rank);
+
+	
+	}
+	
+	private static void EM() {
+		int max = 1000000;
+		int[] boundaries = new int[16];
+		int boundary = 0;
+		for(int i = 0; i < 16; i ++) {
+			boundaries[i] = boundary;
+			boundary += 500;
+		}
+		while(true) {
+			System.out.println();
+			System.out.println();
+			for(int i = 0; i < 16; i++) {
+				System.out.print("- " + boundaries[i]);
+			}
+		
+		
+			int[] histogram = new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+			for(int i = 0; i < max; i ++) {
+				Hand rh = randHand();
+				int ev = evaluator.evaluate(rh.toCards());
+				int ahs = 0;
+				for(ahs = 0; ahs < 14; ahs++) {
+					if(ev < boundaries[ahs + 1]) {
+						break;
+					}
+				}
+				histogram[ahs] += 1;
+			}
+
+			System.out.println();
+			for(int i = 0; i < 15; i++) {
+				System.out.print("- " + histogram[i]);
+			}
+			
+			boundary = 0;
+			int[] newBoundaries = new int[15]; 
+			for(int i = 0; i <= 14; i++) {
+				newBoundaries[i] = boundary;
+				double oldDiff = boundaries[i + 1] - boundaries[i];
+				int newDiff = (int) (oldDiff / (((double) histogram[i] * 15) / 1000000));
+				boundary += newDiff;
+			}
+			newBoundaries[15] = 7500;
+			boundaries = newBoundaries;
+		}
+	}
+	
+	private static Hand randHand() {
+		String[] suits = {"h","s","c","d"};
+		String[] ranks = {"2","3","4","5","6","7","8","9","T","J","Q","K","A"};
+		String hs = "";
+		for(int i = 0; i < 7; i++) {
+			hs += ranks[(int) (Math.random() * 13)] + suits[(int) (Math.random() * 4)];
+		}
+		Hand h = Hand.parse(hs);
+		if(h.noCards() < 7) h = randHand();
+		return h;
+	}
+}

@@ -1,0 +1,25 @@
+package me.saac.i.ai;
+import java.util.regex.*;
+
+import pokerai.game.eval.spears.Card;
+import pokerai.game.eval.spears.FiveCardEvaluator;
+import pokerai.game.eval.spears.SevenCardEvaluator;
+
+public class RegexTest {
+	
+    public static void main(String[] args) {
+	Pattern p = Pattern.compile("is dealt [A-z0-9 ]+ \\((..),(..)\\)");
+	String s = "JavaBot is dealt the 2 of Spades and the Ace of Hearts (2s,Ah).";
+	Matcher m = p.matcher(s);
+	System.out.println("Matches: " + m.find());
+	System.out.println("Group: " + m.group(1));
+	System.out.println("Group: " + m.group(2));
+	
+	Pattern inputPrompt = Pattern.compile("your move? \\(c\\)heck/call \\(([0-9]+)\\), bet/\\(r\\)aise \\(([0-9]+)\\), \\(f\\)old");
+	String ss = "CoffeeBot, your move? (c)heck/call (1), bet/(r)aise (3), (f)old";
+	m = inputPrompt.matcher(ss); 
+	System.out.println("Matches: " + m.find());
+	System.out.println("Group: " + m.group(1));
+	System.out.println("Group: " + m.group(2));
+
+}
