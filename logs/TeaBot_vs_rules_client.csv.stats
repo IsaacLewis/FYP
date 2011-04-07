@@ -1,0 +1,16 @@
+name: TeaBot
+hands_won_by_opponent_folds: 3261
+chips_won_by_opponent_folds: 14796
+hands_won_at_showdown: 1419
+chips_won_at_showdown: 41200
+Average won at showdown: 29.0345313601128
+Average won by opponent folds: 4.53725850965961
+
+
+name: RulesBot
+hands_won_by_opponent_folds: 3490
+chips_won_by_opponent_folds: 11982
+hands_won_at_showdown: 1723
+chips_won_at_showdown: 59768
+Average won at showdown: 34.6883343006384
+Average won by opponent folds: 3.43323782234957

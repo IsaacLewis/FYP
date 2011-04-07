@@ -174,9 +174,10 @@ public class ImprovedOpponentModel implements OpponentModel {
 		}
 		
 		try {
-			if(actionData.numInstances() >= 1) {
+			int numI = actionData.numInstances();
+			if(numI >= 1 && (numI < 100 || numI % 100 < 6)) {
 				System.out.println("numInstances: " + actionData.numInstances());
-				actionClassifier = new NaiveBayes();
+				actionClassifier = new MultilayerPerceptron();
 				actionClassifier.buildClassifier(actionData);
 				// System.out.println("\n"+classifier.toString());
 			}

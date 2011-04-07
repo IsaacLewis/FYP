@@ -45,6 +45,8 @@ class PokerServer
     until match_won or (not max_hands.nil? and hand_no > max_hands)
       send "\n-------\n\n"
       send "Hand No: #{hand_no}"
+      puts "Hand No: #{hand_no}" if hand_no % 100 == 0
+
       
       $log_file.write $player1.chips.to_s + "\n"
       game = Game.new $players, $pot, small_bet

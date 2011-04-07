@@ -31,7 +31,11 @@ public class ActionList extends ArrayList<Action> {
 	}
 
 	// returns just the actions performed by the opponent
+	// TODO: error NullPointer when player in no1
+
 	ActionList opponentActions(GameInfo gameInfo) {
+		if(this.size() == 0) return this;
+		
 		ActionList opponentActions = new ActionList();
 		
 		// keeps track of which actions belong to OPPONENT
