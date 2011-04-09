@@ -175,7 +175,7 @@ public class ImprovedOpponentModel implements OpponentModel {
 		
 		try {
 			int numI = actionData.numInstances();
-			if(numI >= 1 && (numI < 200 || numI % 200 < 6)) {
+			if(numI >= 1 && (numI < 100 || numI % 100 < 6)) {
 				System.out.println("numInstances: " + actionData.numInstances());
 				actionClassifier = new MultilayerPerceptron();
 				actionClassifier.buildClassifier(actionData);
