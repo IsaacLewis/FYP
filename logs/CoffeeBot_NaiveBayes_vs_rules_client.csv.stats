@@ -1,0 +1,16 @@
+name: CoffeeBot
+hands_won_by_opponent_folds: 2507
+chips_won_by_opponent_folds: 9944
+hands_won_at_showdown: 1821
+chips_won_at_showdown: 39656
+Average won at showdown: 21.777045579352
+Average won by opponent folds: 3.96649381731153
+
+
+name: RulesBot
+hands_won_by_opponent_folds: 3490
+chips_won_by_opponent_folds: 11982
+hands_won_at_showdown: 2042
+chips_won_at_showdown: 36020
+Average won at showdown: 17.639569049951
+Average won by opponent folds: 3.43323782234957

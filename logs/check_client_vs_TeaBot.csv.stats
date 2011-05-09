@@ -1,0 +1,16 @@
+name: AlwaysCheck
+hands_won_by_opponent_folds: 3007
+chips_won_by_opponent_folds: 9021
+hands_won_at_showdown: 3136
+chips_won_at_showdown: 25992
+Average won at showdown: 8.28826530612245
+Average won by opponent folds: 3.0
+
+
+name: TeaBot
+hands_won_by_opponent_folds: 0
+chips_won_by_opponent_folds: 0
+hands_won_at_showdown: 3586
+chips_won_at_showdown: 53676
+Average won at showdown: 14.968209704406
+Average won by opponent folds: NaN

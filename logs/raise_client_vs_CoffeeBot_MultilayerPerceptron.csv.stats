@@ -1,0 +1,16 @@
+name: AlwaysRaise
+hands_won_by_opponent_folds: 8042
+chips_won_by_opponent_folds: 50571
+hands_won_at_showdown: 493
+chips_won_at_showdown: 21180
+Average won at showdown: 42.9614604462475
+Average won by opponent folds: 6.28836110420293
+
+
+name: CoffeeBot
+hands_won_by_opponent_folds: 0
+chips_won_by_opponent_folds: 0
+hands_won_at_showdown: 1414
+chips_won_at_showdown: 74896
+Average won at showdown: 52.967468175389
+Average won by opponent folds: NaN

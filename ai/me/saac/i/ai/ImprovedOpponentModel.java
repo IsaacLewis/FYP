@@ -6,6 +6,7 @@ import me.saac.i.ai.GameState.Action;
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.MultilayerPerceptron;
+import weka.classifiers.trees.J48;
 import weka.core.*;
 
 
@@ -175,11 +176,12 @@ public class ImprovedOpponentModel implements OpponentModel {
 		
 		try {
 			int numI = actionData.numInstances();
-			if(numI >= 1 && (numI < 200 || numI % 200 < 6)) {
+			if(numI >= 1 && (numI < 200 || (numI % 100 < 6 && numI < 1000) || numI % 500 < 6)) {
 				System.out.println("numInstances: " + actionData.numInstances());
-				actionClassifier = new MultilayerPerceptron();
+				actionClassifier = new NaiveBayes();
 				actionClassifier.buildClassifier(actionData);
-				// System.out.println("\n"+classifier.toString());
+				System.out.println("\n"+actionClassifier.toString());
+				
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -206,7 +208,7 @@ public class ImprovedOpponentModel implements OpponentModel {
 	public double[] actionProbabilities(ActionList history, GameState gameState) {
 		Instance currentState = gameStateToInstance(history, gameState, null);
 		currentState.setDataset(actionData);
-		double[] ap = {0.3, 0.3, 0.4}; // defaults for first hand
+		double[] ap = {0.5, 0.5, 0.0}; // defaults for first hand
 		if(actionClassifier != null) {
 			try {
 				ap = actionClassifier.distributionForInstance(currentState);

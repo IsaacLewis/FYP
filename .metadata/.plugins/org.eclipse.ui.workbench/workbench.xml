@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="20" version="2.0">
+<workbench progressCount="19" version="2.0">
 <workbenchAdvisor/>
 <window height="768" maximized="true" width="1024" x="0" y="24">
 <fastViewData fastViewLocation="1024"/>
@@ -59,11 +59,11 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Player.java" partName="Player.java" path="/home/isaac/prj/fyp/ai/me/saac/i/ai/Player.java" title="Player.java" tooltip="ai/me/saac/i/ai/Player.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ai/me/saac/i/ai/Player.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="8512" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5641" selectionTopPixel="3254"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GameState.java" partName="GameState.java" path="/home/isaac/prj/fyp/ai/me/saac/i/ai/GameState.java" title="GameState.java" tooltip="ai/me/saac/i/ai/GameState.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ai/me/saac/i/ai/GameState.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="18" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="305" selectionOffset="1784" selectionTopPixel="444"/>
 </editor>
 <editor id="org.eclipse.ui.DefaultTextEditor" name="game.rb" partName="game.rb" title="game.rb" tooltip="/home/isaac/prj/fyp/game.rb" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/isaac/prj/fyp/game.rb"/>
@@ -73,17 +73,17 @@
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/isaac/prj/fyp/poker.rb"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="0"/>
 </editor>
-<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ImprovedOpponentModel.java" partName="ImprovedOpponentModel.java" path="/home/isaac/prj/fyp/ai/me/saac/i/ai/ImprovedOpponentModel.java" title="ImprovedOpponentModel.java" tooltip="ai/me/saac/i/ai/ImprovedOpponentModel.java" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ImprovedOpponentModel.java" partName="ImprovedOpponentModel.java" path="/home/isaac/prj/fyp/ai/me/saac/i/ai/ImprovedOpponentModel.java" title="ImprovedOpponentModel.java" tooltip="ai/me/saac/i/ai/ImprovedOpponentModel.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ai/me/saac/i/ai/ImprovedOpponentModel.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4145" selectionTopPixel="2023"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="6704" selectionTopPixel="3186"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GameInfo.java" partName="GameInfo.java" path="/home/isaac/prj/fyp/ai/me/saac/i/ai/GameInfo.java" title="GameInfo.java" tooltip="ai/me/saac/i/ai/GameInfo.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ai/me/saac/i/ai/GameInfo.java"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="269" selectionTopPixel="0"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ActionList.java" partName="ActionList.java" path="/home/isaac/prj/fyp/ai/me/saac/i/ai/ActionList.java" title="ActionList.java" tooltip="ai/me/saac/i/ai/ActionList.java" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ActionList.java" partName="ActionList.java" path="/home/isaac/prj/fyp/ai/me/saac/i/ai/ActionList.java" title="ActionList.java" tooltip="ai/me/saac/i/ai/ActionList.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ai/me/saac/i/ai/ActionList.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="931" selectionTopPixel="493"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="766" selectionTopPixel="493"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GameStateTest.java" partName="GameStateTest.java" path="/home/isaac/prj/fyp/ai/me/saac/i/ai/GameStateTest.java" title="GameStateTest.java" tooltip="ai/me/saac/i/ai/GameStateTest.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ai/me/saac/i/ai/GameStateTest.java"/>
@@ -242,7 +242,7 @@
 </fastViewBar>
 <fastViewBar fastViewLocation="1024" id="org.eclipse.ui.internal.ViewStack@92218c" orientation="256" selectedTabId="org.eclipse.ui.console.ConsoleView" style="0">
 <fastViews>
-<view id="org.eclipse.ui.console.ConsoleView" ratio="0.5154062"/>
+<view id="org.eclipse.ui.console.ConsoleView" ratio="0.9159664"/>
 </fastViews>
 </fastViewBar>
 </fastViewBars>
@@ -388,19 +388,10 @@
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/ai/me/saac/i/ai/Client.java"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/ai/me/saac/i/ai/ActionList.java"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/ai/me/saac/i/ai/ImprovedOpponentModel.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/ai/me/saac/i/ai/ImprovedOpponentModel.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/ai/me/saac/i/ai/GameState.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/ai/me/saac/i/ai/Player.java"/>
 </editors>
-<item historyLabel="ImprovedOpponentModel.java" index="0">
-<position info="not_deleted" x="3751" y="0"/>
-</item>
-<item historyLabel="ImprovedOpponentModel.java" index="0">
-<position info="not_deleted" x="2718" y="0"/>
-</item>
-<item historyLabel="Tester.java" index="3">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="Tester.java" index="3">
-<position info="not_deleted" x="267" y="0"/>
-</item>
 <item historyLabel="Tester.java" index="3">
 <position info="not_deleted" x="2248" y="0"/>
 </item>
@@ -536,8 +527,20 @@
 <item historyLabel="ActionList.java" index="7">
 <position info="not_deleted" x="1028" y="0"/>
 </item>
-<item active="true" historyLabel="ActionList.java" index="7">
+<item historyLabel="ActionList.java" index="7">
 <position info="not_deleted" x="803" y="0"/>
+</item>
+<item historyLabel="ImprovedOpponentModel.java" index="9">
+<position info="not_deleted" x="4145" y="0"/>
+</item>
+<item historyLabel="GameState.java" index="10">
+<position info="not_deleted" x="18" y="0"/>
+</item>
+<item historyLabel="Player.java" index="11">
+<position info="not_deleted" x="5641" y="0"/>
+</item>
+<item active="true" historyLabel="ImprovedOpponentModel.java" index="9">
+<position info="not_deleted" x="6931" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>

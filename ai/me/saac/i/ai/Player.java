@@ -164,6 +164,9 @@ public class Player {
 
     	System.out.println(currentState.print());
 
+    	double winPossibility = gameInfo.opponentModel.winPossibility(actionHistory, gameInfo, knownCards.evaluate());
+		System.out.println("Win%: " + winPossibility);
+		
         Matcher inputPromptMatcher = inputPrompt.matcher(prompt); 
     	inputPromptMatcher.find();
     	int callCost = Integer.parseInt(inputPromptMatcher.group(1));

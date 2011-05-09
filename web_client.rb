@@ -4,9 +4,9 @@ require 'card.rb'
 
 class WebClient < Client
   @@port = 2020
-  @@sleep_time = 0.8
+  @@sleep_time = 0.5
 
-  def initialize(player_no)
+  def initialize(player_no, quiet=false)
     @received_msgs = []
     @board = []
     @hand = []
@@ -49,6 +49,7 @@ class WebClient < Client
 
     when /([A-z0-9]*) shows (..) (..)/
       @opponent_hand = [$2,$3] if $1 == @opponent_name
+      # sleep @@sleep_time * 10
     end
   end
 

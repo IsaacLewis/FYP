@@ -7,6 +7,6 @@
 <listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="me.saac.i.ai.Client"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="1 --improved"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="2 --improved"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="ai"/>
 </launchConfiguration>

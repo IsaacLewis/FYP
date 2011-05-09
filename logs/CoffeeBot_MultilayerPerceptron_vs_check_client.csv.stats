@@ -1,0 +1,16 @@
+name: CoffeeBot
+hands_won_by_opponent_folds: 0
+chips_won_by_opponent_folds: 0
+hands_won_at_showdown: 3516
+chips_won_at_showdown: 55152
+Average won at showdown: 15.6860068259386
+Average won by opponent folds: NaN
+
+
+name: AlwaysCheck
+hands_won_by_opponent_folds: 2986
+chips_won_by_opponent_folds: 8958
+hands_won_at_showdown: 3245
+chips_won_at_showdown: 29940
+Average won at showdown: 9.22650231124807
+Average won by opponent folds: 3.0
