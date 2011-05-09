@@ -1,1 +1,0 @@
-file = File.open "preset_hands.txt","w"
