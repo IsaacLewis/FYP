@@ -1,0 +1,3 @@
+Copyright Isaac Lewis & Hong Kong University of Science and Technology 2011
+
+This is my third year project. The folder "server" contains the Ruby code that runs the poker server and web frontend, and a few simple bots. The folder "ai" contains the Java code for the main AI. If you want more help getting things running, email me.
